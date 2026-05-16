@@ -120,7 +120,9 @@ public class MysteryLootTablePage extends InteractiveCustomUIPage<MysteryLootTab
         var rolled = MysteryLootPlugin.INSTANCE.Manager.RollAndGiveLootTable(TableId, ref, store, Player);
         HasRolled = true;
         if (rolled != null) {
-          MysteryLootPlugin.INSTANCE.Manager.UI.OpenResultPage(ref, store, rolled.ItemId, rolled.Amount);
+          var table = MysteryLootPlugin.INSTANCE.Manager.GetLootTable(TableId);
+          var items = table != null ? table.Items : java.util.List.of(rolled);
+          MysteryLootPlugin.INSTANCE.Manager.UI.OpenRollAnimationPage(ref, store, items, rolled.ItemId, rolled.Amount);
         }
         return;
     }

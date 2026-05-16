@@ -9,6 +9,8 @@ import arc.mysteryloot.configs.MysteryLootTablesConfig;
 import arc.mysteryloot.managers.MysteryLootCommandPermissionManager;
 import arc.mysteryloot.managers.MysteryLootManager;
 import arc.mysteryloot.commands.MysteryLootCommands;
+import arc.mysteryloot.components.LootRollViewer;
+import arc.mysteryloot.systems.LootRollSystem;
 import com.hypixel.hytale.server.core.util.Config;
 
 public class MysteryLootPlugin extends JavaPlugin {
@@ -30,7 +32,12 @@ public class MysteryLootPlugin extends JavaPlugin {
     TablesConfig.save();
 
     this.Manager = new MysteryLootManager(TablesConfig);
-    
+
+    LootRollViewer.SetComponentType(
+      this.getEntityStoreRegistry().registerComponent(LootRollViewer.class, "Arc:LootRollViewer", LootRollViewer.CODEC)
+    );
+    this.getEntityStoreRegistry().registerSystem(new LootRollSystem());
+
     this.getCommandRegistry().registerCommand(new MysteryLootCommands());
   }
 

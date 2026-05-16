@@ -9,10 +9,15 @@ import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
+import arc.mysteryloot.pages.MysteryLootRollAnimationPage;
 import arc.mysteryloot.pages.MysteryLootSimulatePage;
 import arc.mysteryloot.pages.MysteryLootTableEditorPage;
 import arc.mysteryloot.pages.MysteryLootTablePage;
 import arc.mysteryloot.pages.MysteryLootTableResultPage;
+import arc.mysteryloot.classes.MysteryLootTableItem;
+import arc.mysteryloot.components.LootRollViewer;
+
+import java.util.List;
 
 public class MysteryLootUIManager {
   @Nonnull
@@ -96,6 +101,29 @@ public class MysteryLootUIManager {
     if (player == null) return;
 
     var page = new MysteryLootTableResultPage(playerRef, itemId, amount);
+    player.getPageManager().openCustomPage(ref, store, page);
+  }
+  public void OpenRollAnimationPage(
+    @Nonnull Ref<EntityStore> ref,
+    @Nonnull Store<EntityStore> store,
+    @Nonnull List<MysteryLootTableItem> tableItems,
+    @Nonnull String realItemId,
+    int realAmount
+  ) {
+    PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
+    if (playerRef == null || !playerRef.isValid()) return;
+
+    Player player = store.getComponent(ref, Player.getComponentType());
+    if (player == null) return;
+
+    // Attach the LootRollViewer component so LootRollSystem can drive the animation
+    var viewer = new LootRollViewer();
+    viewer.ItemId = realItemId;
+    viewer.Amount = realAmount;
+    store.addComponent(ref, LootRollViewer.GetComponentType(), viewer);
+
+    // Open the animation page
+    var page = new MysteryLootRollAnimationPage(playerRef, tableItems, realItemId);
     player.getPageManager().openCustomPage(ref, store, page);
   }
 }
