@@ -23,18 +23,6 @@ $C.@PageOverlay {
       LayoutMode: Top;
       Padding: (Horizontal: 16, Top: 12, Bottom: 16);
 
-      // ── Possible items ────────────────────────────────────────────────
-      Label {
-        Text: "Possible Rewards";
-        Style: (
-          TextColor: #8f9dae,
-          HorizontalAlignment: Center,
-        );
-        Anchor: (Left: 0, Right: 0);
-      }
-
-      Group { Anchor: (Height: 10); }
-
       // Scrollable item card row
       Group {
         Anchor: (Left: 0, Right: 0);
@@ -109,13 +97,6 @@ $C.@PageOverlay {
       $C.@TextButton #RollButton {
         Anchor: (Left: 0, Right: 0, Height: 44);
         Text: "Open Loot";
-      }
-
-      Group { Anchor: (Height: 4); }
-
-      $C.@SecondaryTextButton #CloseButton {
-        Anchor: (Left: 0, Right: 0, Height: 36);
-        Text: "Close";
       }
     }
   }
