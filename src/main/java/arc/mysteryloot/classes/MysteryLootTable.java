@@ -11,8 +11,15 @@ import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 
 public class MysteryLootTable {
+  /** Item (and amount) required to open this loot table. */
+
+  @Nonnull
+  public MysteryLootKey RequiredKey = new MysteryLootKey();
+
   @Nonnull
   public List<MysteryLootTableItem> Items = new ArrayList<>();
+
+  
 
   public MysteryLootTable() {}
 
@@ -21,6 +28,9 @@ public class MysteryLootTable {
       for (MysteryLootTableItem item : other.Items) {
         this.Items.add(new MysteryLootTableItem(item));
       }
+    }
+    if (other != null) {
+      this.RequiredKey = new MysteryLootKey(other.RequiredKey);
     }
   }
 
@@ -40,6 +50,12 @@ public class MysteryLootTable {
       new KeyedCodec<>("Items", new ArrayCodec<>(MysteryLootTableItem.CODEC, MysteryLootTableItem[]::new)),
       (config, value) -> config.Items = value != null ? new ArrayList<>(Arrays.asList(value)) : new ArrayList<>(),
       config -> config.Items.toArray(new MysteryLootTableItem[0])
+    )
+    .add()
+    .append(
+      new KeyedCodec<>("RequiredKey", MysteryLootKey.CODEC),
+      (config, value) -> config.RequiredKey = value != null ? value : new MysteryLootKey(),
+      config -> config.RequiredKey
     )
     .add()
     .build();

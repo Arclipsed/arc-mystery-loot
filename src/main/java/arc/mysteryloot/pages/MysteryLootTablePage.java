@@ -15,12 +15,14 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
+import com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer;
 import com.hypixel.hytale.server.core.ui.builder.EventData;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
+import arc.core.managers.InventoryManager;
 import arc.mysteryloot.MysteryLootPlugin;
 import arc.mysteryloot.classes.MysteryLootTable;
 import arc.mysteryloot.classes.MysteryLootTableItem;
@@ -31,8 +33,14 @@ import arc.mysteryloot.classes.MysteryLootTableItem;
  */
 public class MysteryLootTablePage extends InteractiveCustomUIPage<MysteryLootTablePage.MysteryLootTablePageEventData> {
 
-  @Nonnull private final String TableId;
-  @Nonnull private final PlayerRef Player;
+  @Nonnull 
+  private final String TableId;
+  @Nonnull 
+  private final PlayerRef Player;
+
+  @Nullable 
+  private CombinedItemContainer PlayerInventory;
+
   private boolean HasRolled = false;
 
   public MysteryLootTablePage(@Nonnull PlayerRef playerRef, @Nonnull String tableId) {
@@ -50,15 +58,50 @@ public class MysteryLootTablePage extends InteractiveCustomUIPage<MysteryLootTab
     @Nonnull UIEventBuilder events,
     @Nonnull Store<EntityStore> store
   ) {
+    PlayerInventory = InventoryManager.GetInventory(ref, store);
+    if (PlayerInventory == null) {
+      return;
+    }
+
     cmd.append("MysteryLoot/Pages/MysteryLootTablePage.ui");
 
     cmd.set("#TableNameLabel.Text", TableId.replace("_", " "));
-    cmd.set("#RollButton.Disabled", HasRolled);
+
+    // Disable roll if already rolled, missing required item, or no inventory space
+    var table = MysteryLootPlugin.INSTANCE.Manager.GetLootTable(TableId);
+    boolean canRoll = !HasRolled && canRoll(table);
+    cmd.set("#RollButton.Disabled", !canRoll);
+
+    // Show required key item slot if configured
+    if (table != null && table.RequiredKey.IsRequired()) {
+      cmd.set("#RequiredKeyGroup.Visible", true);
+      cmd.set("#RequiredKeySlot.ItemId", table.RequiredKey.ItemId);
+      cmd.set("#RequiredKeySlot.Quantity", table.RequiredKey.Amount);
+    }
 
     renderItems(cmd);
 
     events.addEventBinding(CustomUIEventBindingType.Activating, "#CloseButton", EventData.of("Action", "Close"), false);
     events.addEventBinding(CustomUIEventBindingType.Activating, "#RollButton", EventData.of("Action", "Roll"), false);
+  }
+
+  private boolean canRoll(MysteryLootTable table) {
+    if (PlayerInventory == null) return false;
+    if (table == null) return false;
+
+    // Check required key item
+    if (table.RequiredKey.IsRequired() &&
+        !InventoryManager.HasItem(PlayerInventory, table.RequiredKey.ItemId, table.RequiredKey.Amount)) {
+      return false;
+    }
+
+    // Check inventory space for at least 1 item
+    if (!table.Items.isEmpty()) {
+      var anyItem = table.Items.get(0);
+      if (!InventoryManager.HasSpace(PlayerInventory, anyItem.ItemId, 1)) return false;
+    }
+
+    return true;
   }
 
   // ── Helpers ────────────────────────────────────────────────────────────────
@@ -117,11 +160,18 @@ public class MysteryLootTablePage extends InteractiveCustomUIPage<MysteryLootTab
 
       case "Roll":
         if (HasRolled) break;
+        var table = MysteryLootPlugin.INSTANCE.Manager.GetLootTable(TableId);
+        if (!canRoll(table)) break;
+
+        // Consume the required key item
+        if (table.RequiredKey.IsRequired()) {
+          InventoryManager.RemoveItem(PlayerInventory, table.RequiredKey.ItemId, table.RequiredKey.Amount);
+        }
+
         var rolled = MysteryLootPlugin.INSTANCE.Manager.RollLootTable(TableId);
         HasRolled = true;
         if (rolled != null) {
-          var table = MysteryLootPlugin.INSTANCE.Manager.GetLootTable(TableId);
-          var items = table != null ? table.Items : java.util.List.of(rolled);
+          var items = table.Items;
           MysteryLootPlugin.INSTANCE.Manager.UI.OpenRollAnimationPage(ref, store, items, rolled.ItemId, rolled.Amount);
         }
         return;
