@@ -36,10 +36,7 @@ import arc.mysteryloot.classes.MysteryLootTableItem;
 public class MysteryLootSimulatePage extends InteractiveCustomUIPage<MysteryLootSimulatePage.MysteryLootSimulatePageEventData> {
 
   @Nullable private String SelectedTableId;
-
-  // Aggregated stats: itemId → times rolled
   @Nonnull private final Map<String, Integer> RollCounts = new HashMap<>();
-  // itemId → amount per drop (from the table config)
   @Nonnull private final Map<String, Integer> ItemAmounts = new HashMap<>();
   private int TotalRolls = 0;
 
@@ -109,7 +106,7 @@ public class MysteryLootSimulatePage extends InteractiveCustomUIPage<MysteryLoot
       cmd.set(sel + " #LootItemSlot.ItemId", item.ItemId);
       cmd.set(sel + " #LootItemSlot.Quantity", item.Amount);
       cmd.set(sel + " #ItemIdLabel.Text", item.ItemId);
-      cmd.set(sel + " #ItemChanceLabel.Text", "x" + item.Amount + "  |  w" + String.format("%.3f", item.DropWeight) + "  →  " + pct);
+      cmd.set(sel + " #ItemChanceLabel.Text", "x" + item.Amount + "  |  w" + String.format("%.3f", item.DropWeight) + "  ->  " + pct);
     }
   }
 

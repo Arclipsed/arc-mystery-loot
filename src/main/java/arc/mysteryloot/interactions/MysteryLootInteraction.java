@@ -2,6 +2,7 @@ package arc.mysteryloot.interactions;
 
 import javax.annotation.Nonnull;
 
+import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.protocol.InteractionState;
@@ -10,7 +11,6 @@ import com.hypixel.hytale.server.core.entity.InteractionContext;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.CooldownHandler;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.SimpleInstantInteraction;
 
-import arc.mysteryloot.configs.MysteryLootConfig;
 
 public class MysteryLootInteraction extends SimpleInstantInteraction {
   @Nonnull
@@ -19,7 +19,7 @@ public class MysteryLootInteraction extends SimpleInstantInteraction {
   public static final String CooldownId = "MysteryLoot_Interaction_Cooldown";
 
   @Nonnull
-  public MysteryLootConfig Config = new MysteryLootConfig();
+  public String TableId = null;
 
   @Override
   protected void firstRun(
@@ -27,7 +27,8 @@ public class MysteryLootInteraction extends SimpleInstantInteraction {
     @Nonnull InteractionContext interactionContext,
     @Nonnull CooldownHandler cooldownHandler
   ) {
-    // TODO: Implement Mystery Loot interaction logic.
+    if (TableId == null) return;
+
     cancel(interactionContext);
   }
 
@@ -42,10 +43,10 @@ public class MysteryLootInteraction extends SimpleInstantInteraction {
     MysteryLootInteraction.CODEC
   )
   .appendInherited(
-    new KeyedCodec<>("Config", MysteryLootConfig.CODEC),
-    (interaction, value) -> interaction.Config = value != null ? value : new MysteryLootConfig(),
-    (interaction) -> interaction.Config,
-    (interaction, parent) -> interaction.Config = parent.Config != null ? new MysteryLootConfig(parent.Config) : new MysteryLootConfig()
+    new KeyedCodec<>("TableId", Codec.STRING),
+    (interaction, value) -> interaction.TableId = value != null ? value : "",
+    (interaction) -> interaction.TableId,
+    (interaction, parent) -> interaction.TableId = parent.TableId != null ? parent.TableId : ""
   )
   .add()
   .build();

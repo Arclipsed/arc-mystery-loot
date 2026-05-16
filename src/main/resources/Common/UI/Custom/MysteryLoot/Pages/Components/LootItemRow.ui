@@ -44,7 +44,7 @@ Group #LootItemRow {
         TextColor: #8f9dae,
         FontSize: 11,
       );
-      Text: "x1 | w1.000 → 100.000%";
+      Text: "x1 | w1.000 -> 100.000%";
     }
   }
 
