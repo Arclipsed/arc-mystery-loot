@@ -27,7 +27,7 @@ public class MysteryLootPlugin extends JavaPlugin {
     TablesConfig.get().Init();
     TablesConfig.save();
 
-    this.Manager = new MysteryLootManager();
+    this.Manager = new MysteryLootManager(TablesConfig);
   }
 
   @Override
