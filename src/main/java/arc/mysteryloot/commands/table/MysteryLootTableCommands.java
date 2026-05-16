@@ -12,5 +12,6 @@ public class MysteryLootTableCommands extends AbstractCommandCollection {
 
     addSubCommand(new CreateTableCommand("create", "Create a new loot table"));
     addSubCommand(new UpdateTableCommand("update", "Update an existing loot table"));
+    addSubCommand(new RollTableCommand());
   }
 }

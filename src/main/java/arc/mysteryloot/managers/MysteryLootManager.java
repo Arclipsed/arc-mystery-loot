@@ -118,5 +118,25 @@ public class MysteryLootManager {
     TablesConfig.save();
     return true;
   }
+  /**
+   * Picks a random item from the table using weighted selection.
+   * Returns null if the table doesn't exist or has no items.
+   */
+  @Nullable
+  public MysteryLootTableItem RollLootTable(String tableId) {
+    MysteryLootTable table = GetLootTable(tableId);
+    if (table == null || table.Items.isEmpty()) return null;
+
+    double totalWeight = table.Items.stream().mapToDouble(i -> i.DropWeight).sum();
+    if (totalWeight <= 0) return null;
+
+    double roll = Math.random() * totalWeight;
+    double cumulative = 0;
+    for (MysteryLootTableItem item : table.Items) {
+      cumulative += item.DropWeight;
+      if (roll < cumulative) return item;
+    }
+    return table.Items.get(table.Items.size() - 1);
+  }
 
 }
