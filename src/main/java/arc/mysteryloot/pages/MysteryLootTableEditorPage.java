@@ -149,9 +149,9 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
     for (int i = 0; i < EditingTable.Items.size(); i++) {
       MysteryLootTableItem it = EditingTable.Items.get(i);
       String pct = totalWeight > 0
-        ? String.format("%.1f%%", (it.DropWeight / totalWeight) * 100.0)
+        ? String.format("%.3f%%", (it.DropWeight / totalWeight) * 100.0)
         : "0%";
-      String label = it.ItemId + " | x" + it.Amount + " | w" + it.DropWeight + " | " + pct;
+      String label = it.ItemId + " | x" + it.Amount + " | w" + String.format("%.3f", it.DropWeight) + " | " + pct;
       entries.add(new DropdownEntryInfo(LocalizableString.fromString(label), String.valueOf(i)));
     }
     cmd.set("#ItemListDropdown.Entries", entries);
@@ -299,9 +299,12 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
         break;
 
       case "ItemDropChanceChanged":
-        ItemFormDropWeight = data.Amount != null
-          ? Math.max(0.01, Math.min(100.0, data.Amount.doubleValue()))
-          : 1.0;
+        if (data.Amount != null) {
+          double raw = Math.max(0.005, Math.min(999.0, data.Amount.doubleValue()));
+          ItemFormDropWeight = Math.round(raw * 1000.0) / 1000.0;
+        } else {
+          ItemFormDropWeight = 1.0;
+        }
         break;
 
       case "AddItem":

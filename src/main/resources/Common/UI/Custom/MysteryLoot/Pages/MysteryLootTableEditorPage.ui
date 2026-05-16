@@ -161,10 +161,10 @@ $C.@DecoratedContainer {
           $C.@NumberField #ItemDropChanceInput {
             @Anchor = (Height: 40);
             Format: (
-              MaxDecimalPlaces: 2,
-              Step: 0.1,
-              MinValue: 0.01,
-              MaxValue: 100
+              MaxDecimalPlaces: 3,
+              Step: 0.005,
+              MinValue: 0.005,
+              MaxValue: 9999
             );
             Value: 1.0;
           }
