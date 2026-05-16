@@ -40,10 +40,14 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
   @Nonnull private String EditingTableName = "";
   @Nonnull private MysteryLootTable EditingTable = new MysteryLootTable();
 
+  // Saved snapshot for dirty-checking
+  @Nonnull private String SavedTableName = "";
+  @Nonnull private MysteryLootTable SavedTable = new MysteryLootTable();
+
   // Item form state
   @Nonnull private String ItemFormId = "";
   private int ItemFormAmount = 1;
-  private double ItemFormDropChance = 1.0;
+  private double ItemFormDropWeight = 1.0;
   // -1 = create new item, >= 0 = editing existing item at index
   private int EditingItemIndex = -1;
 
@@ -58,9 +62,11 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
     if (targetId != null) {
       SelectedTableId = targetId;
       EditingTableName = targetId;
+      SavedTableName = targetId;
       MysteryLootTable existing = MysteryLootPlugin.INSTANCE.Manager.GetLootTable(targetId);
       if (existing != null) {
         EditingTable = new MysteryLootTable(existing);
+        SavedTable = new MysteryLootTable(existing);
       }
     }
   }
@@ -132,7 +138,8 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
   private void loadForm(UICommandBuilder cmd) {
     cmd.set("#TableNameInput.Value", EditingTableName);
     cmd.set("#ErrorLabel.Visible", false);
-    cmd.set("#SaveTableButton.Disabled", EditingTableName.isEmpty());
+    boolean hasChanges = !EditingTableName.equals(SavedTableName) || !EditingTable.Matches(SavedTable);
+    cmd.set("#SaveTableButton.Disabled", EditingTableName.isEmpty() || !hasChanges);
   }
 
   private void updateItemList(UICommandBuilder cmd) {
@@ -140,7 +147,7 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
     entries.add(new DropdownEntryInfo(LocalizableString.fromString("-- Create Item --"), "-1"));
     for (int i = 0; i < EditingTable.Items.size(); i++) {
       MysteryLootTableItem it = EditingTable.Items.get(i);
-      String label = it.ItemId + "  x" + it.Amount + "  (" + it.DropChance + "%)";
+      String label = it.ItemId + "  x" + it.Amount + "  (w:" + it.DropWeight + ")";
       entries.add(new DropdownEntryInfo(LocalizableString.fromString(label), String.valueOf(i)));
     }
     cmd.set("#ItemListDropdown.Entries", entries);
@@ -151,7 +158,7 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
   private void loadItemForm(UICommandBuilder cmd) {
     cmd.set("#ItemIdInput.Value", ItemFormId);
     cmd.set("#ItemAmountInput.Value", (float) ItemFormAmount);
-    cmd.set("#ItemDropChanceInput.Value", (float) ItemFormDropChance);
+    cmd.set("#ItemDropChanceInput.Value", (float) ItemFormDropWeight);
     cmd.set("#AddItemButton.Disabled", ItemFormId.isEmpty());
     cmd.set("#AddItemButton.Text", EditingItemIndex >= 0 ? "Update Item" : "Add Item to Table");
   }
@@ -159,7 +166,7 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
   private void resetItemForm() {
     ItemFormId = "";
     ItemFormAmount = 1;
-    ItemFormDropChance = 1.0;
+    ItemFormDropWeight = 1.0;
     EditingItemIndex = -1;
   }
 
@@ -193,7 +200,9 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
           if (selected == null) break;
           SelectedTableId = data.SelectedType;
           EditingTableName = data.SelectedType;
+          SavedTableName = data.SelectedType;
           EditingTable = new MysteryLootTable(selected);
+          SavedTable = new MysteryLootTable(selected);
           resetItemForm();
         }
         UICommandBuilder switchCmd = new UICommandBuilder();
@@ -209,7 +218,9 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
         MysteryLootPlugin.INSTANCE.Manager.DeleteMysteryLootTable(SelectedTableId);
         SelectedTableId = null;
         EditingTableName = "";
+        SavedTableName = "";
         EditingTable = new MysteryLootTable();
+        SavedTable = new MysteryLootTable();
         resetItemForm();
         UICommandBuilder deleteCmd = new UICommandBuilder();
         populateTableDropdown(deleteCmd);
@@ -229,6 +240,8 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
             MysteryLootPlugin.INSTANCE.Manager.UpdateMysteryLootTable(EditingTableName, EditingTable);
           }
           SelectedTableId = EditingTableName;
+          SavedTableName = EditingTableName;
+          SavedTable = new MysteryLootTable(EditingTable);
         } else {
           boolean created = MysteryLootPlugin.INSTANCE.Manager.CreateMysteryLootTable(EditingTableName);
           if (!created) {
@@ -242,6 +255,8 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
             MysteryLootPlugin.INSTANCE.Manager.UpdateMysteryLootTable(EditingTableName, EditingTable);
           }
           SelectedTableId = EditingTableName;
+          SavedTableName = EditingTableName;
+          SavedTable = new MysteryLootTable(EditingTable);
         }
         UICommandBuilder saveCmd = new UICommandBuilder();
         populateTableDropdown(saveCmd);
@@ -264,7 +279,7 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
           MysteryLootTableItem sel = EditingTable.Items.get(EditingItemIndex);
           ItemFormId = sel.ItemId;
           ItemFormAmount = sel.Amount;
-          ItemFormDropChance = sel.DropChance;
+          ItemFormDropWeight = sel.DropWeight;
         } else {
           resetItemForm();
         }
@@ -280,7 +295,7 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
         break;
 
       case "ItemDropChanceChanged":
-        ItemFormDropChance = data.Amount != null
+        ItemFormDropWeight = data.Amount != null
           ? Math.max(0.01, Math.min(100.0, data.Amount.doubleValue()))
           : 1.0;
         break;
@@ -290,7 +305,7 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
         MysteryLootTableItem newItem = new MysteryLootTableItem();
         newItem.ItemId = ItemFormId;
         newItem.Amount = ItemFormAmount;
-        newItem.DropChance = ItemFormDropChance;
+        newItem.DropWeight = ItemFormDropWeight;
         if (EditingItemIndex >= 0 && EditingItemIndex < EditingTable.Items.size()) {
           EditingTable.Items.set(EditingItemIndex, newItem);
         } else {

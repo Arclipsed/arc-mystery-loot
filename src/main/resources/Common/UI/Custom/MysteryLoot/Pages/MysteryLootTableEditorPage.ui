@@ -152,7 +152,7 @@ $C.@DecoratedContainer {
           LayoutMode: Top;
 
           Label {
-            Text: "Drop Chance (%)";
+            Text: "Drop Weight";
             Style: (TextColor: #8f9dae);
           }
 

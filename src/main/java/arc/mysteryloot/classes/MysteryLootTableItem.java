@@ -9,7 +9,7 @@ import com.hypixel.hytale.codec.builder.BuilderCodec;
 public class MysteryLootTableItem {
   @Nonnull
   public String ItemId = "";
-  public double DropChance = 1.0;
+  public double DropWeight = 1.0;
   public int Amount = 1;
 
   public MysteryLootTableItem() {}
@@ -17,9 +17,16 @@ public class MysteryLootTableItem {
   public MysteryLootTableItem(MysteryLootTableItem other) {
     if (other != null) {
       this.ItemId = other.ItemId;
-      this.DropChance = other.DropChance;
+      this.DropWeight = other.DropWeight;
       this.Amount = other.Amount;
     }
+  }
+
+  public boolean Matches(MysteryLootTableItem other) {
+    if (other == null) return false;
+    return java.util.Objects.equals(this.ItemId, other.ItemId)
+      && this.DropWeight == other.DropWeight
+      && this.Amount == other.Amount;
   }
 
   @Nonnull
@@ -32,9 +39,9 @@ public class MysteryLootTableItem {
     )
     .add()
     .append(
-      new KeyedCodec<>("DropChance", Codec.DOUBLE),
-      (config, value) -> config.DropChance = value,
-      config -> config.DropChance
+      new KeyedCodec<>("DropWeight", Codec.DOUBLE),
+      (config, value) -> config.DropWeight = value,
+      config -> config.DropWeight
     )
     .add()
     .append(

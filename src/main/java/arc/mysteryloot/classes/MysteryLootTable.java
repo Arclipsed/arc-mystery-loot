@@ -24,6 +24,15 @@ public class MysteryLootTable {
     }
   }
 
+  public boolean Matches(MysteryLootTable other) {
+    if (other == null) return false;
+    if (this.Items.size() != other.Items.size()) return false;
+    for (int i = 0; i < this.Items.size(); i++) {
+      if (!this.Items.get(i).Matches(other.Items.get(i))) return false;
+    }
+    return true;
+  }
+
   @Nonnull
   public static final BuilderCodec<MysteryLootTable> CODEC = BuilderCodec
     .builder(MysteryLootTable.class, MysteryLootTable::new)
