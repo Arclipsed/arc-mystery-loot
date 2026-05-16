@@ -63,6 +63,8 @@ public class MysteryLootTablePage extends InteractiveCustomUIPage<MysteryLootTab
 
   // ── Helpers ────────────────────────────────────────────────────────────────
 
+  private static final int ITEMS_PER_ROW = 5;
+
   private void renderItems(UICommandBuilder cmd) {
     MysteryLootTable table = MysteryLootPlugin.INSTANCE.Manager.GetLootTable(TableId);
     if (table == null) return;
@@ -73,17 +75,27 @@ public class MysteryLootTablePage extends InteractiveCustomUIPage<MysteryLootTab
 
     double totalWeight = table.Items.stream().mapToDouble(i -> i.DropWeight).sum();
 
+    int rowIndex = 0;
+
     for (int i = 0; i < sorted.size(); i++) {
       MysteryLootTableItem item = sorted.get(i);
       String pct = totalWeight > 0
         ? String.format("%.3f%%", (item.DropWeight / totalWeight) * 100.0)
         : "0%";
 
-      String sel = "#LootItemsContainer[" + i + "]";
-      cmd.append("#LootItemsContainer", "MysteryLoot/Pages/Components/LootItemCard.ui");
-      cmd.set(sel + " #LootItemCardSlot.ItemId", item.ItemId);
-      cmd.set(sel + " #LootItemCardSlot.Quantity", item.Amount);
-      cmd.set(sel + " #LootItemPctLabel.Text", pct);
+      // Start a new row every 5 items
+      if (i % ITEMS_PER_ROW == 0) {
+        rowIndex = i / ITEMS_PER_ROW;
+        cmd.append("#LootItemsContainer", "MysteryLoot/Pages/Components/LootItemRow.ui");
+      }
+
+      String rowSel = "#LootItemsContainer[" + rowIndex + "] #LootItemRow";
+      cmd.append(rowSel, "MysteryLoot/Pages/Components/LootItemCard.ui");
+
+      String cardSel = rowSel + "[" + (i % ITEMS_PER_ROW) + "]";
+      cmd.set(cardSel + " #LootItemCardSlot.ItemId", item.ItemId);
+      cmd.set(cardSel + " #LootItemCardSlot.Quantity", item.Amount);
+      cmd.set(cardSel + " #LootItemPctLabel.Text", pct);
     }
   }
 

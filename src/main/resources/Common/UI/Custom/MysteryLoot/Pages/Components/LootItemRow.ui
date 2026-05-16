@@ -1,57 +1,6 @@
+// A single horizontal row holding up to 5 LootItemCards
 Group #LootItemRow {
   LayoutMode: Left;
-  Anchor: (Left: 0, Right: 0, Height: 56);
-  Padding: (Vertical: 4);
-
-  // Item icon slot (60x60 box)
-  Group {
-    Anchor: (Width: 52, Top: 0, Bottom: 0);
-    Background: (Color: #1a2530);
-    Padding: 2;
-
-    ItemSlotButton {
-      Anchor: (Full: 0);
-      Disabled: true;
-
-      ItemSlot #LootItemSlot {
-        Anchor: (Full: 0);
-        ShowQualityBackground: true;
-        ShowQuantity: true;
-      }
-    }
-  }
-
-  Group { Anchor: (Width: 8); }
-
-  // Labels
-  Group {
-    FlexWeight: 1;
-    LayoutMode: Top;
-    Anchor: (Top: 0, Bottom: 0);
-
-    Label #ItemIdLabel {
-      Style: (
-        TextColor: #dce8f5,
-        FontSize: 13,
-      );
-      Text: "Item ID";
-    }
-
-    Group { Anchor: (Height: 4); }
-
-    Label #ItemChanceLabel {
-      Style: (
-        TextColor: #8f9dae,
-        FontSize: 11,
-      );
-      Text: "x1 | w1.000 → 100.000%";
-    }
-  }
-
-  // Rolled indicator (glowing dot on the right)
-  Group #RolledIndicator {
-    Anchor: (Width: 8, Top: 0, Bottom: 0);
-    Background: (Color: #62ffc0ff);
-    Visible: false;
-  }
+  Anchor: (Left: 0, Right: 0, Height: 120);
+  Padding: (Bottom: 4);
 }
