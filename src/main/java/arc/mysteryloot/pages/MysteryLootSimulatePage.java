@@ -1,9 +1,9 @@
 package arc.mysteryloot.pages;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,19 +30,18 @@ import arc.mysteryloot.classes.MysteryLootTableItem;
 
 /**
  * Admin-only loot table simulator.
- * Pick a table, view all items + drop %, roll 1/5/10 times, see history.
- * All history is in-memory only — nothing is saved.
+ * Rolls 1x / 10x / 100x and shows an aggregated result overview.
+ * All data is in-memory only — nothing is saved.
  */
 public class MysteryLootSimulatePage extends InteractiveCustomUIPage<MysteryLootSimulatePage.MysteryLootSimulatePageEventData> {
 
-  private static final int MAX_HISTORY = 50;
-
   @Nullable private String SelectedTableId;
-  @Nullable private MysteryLootTableItem LastRolledItem;
-  private int TotalRolls = 0;
 
-  // In-memory history: most recent first
-  @Nonnull private final Deque<String> History = new ArrayDeque<>();
+  // Aggregated stats: itemId → times rolled
+  @Nonnull private final Map<String, Integer> RollCounts = new HashMap<>();
+  // itemId → amount per drop (from the table config)
+  @Nonnull private final Map<String, Integer> ItemAmounts = new HashMap<>();
+  private int TotalRolls = 0;
 
   public MysteryLootSimulatePage(@Nonnull PlayerRef playerRef, @Nullable String initialTableId) {
     super(playerRef, CustomPageLifetime.CanDismiss, MysteryLootSimulatePageEventData.CODEC);
@@ -54,7 +53,7 @@ public class MysteryLootSimulatePage extends InteractiveCustomUIPage<MysteryLoot
     }
   }
 
-  // ── Build (called fresh on every rebuild()) ────────────────────────────────
+  // ── Build ──────────────────────────────────────────────────────────────────
 
   @Override
   public void build(
@@ -67,14 +66,13 @@ public class MysteryLootSimulatePage extends InteractiveCustomUIPage<MysteryLoot
 
     populateTableDropdown(cmd);
     renderItemList(cmd);
-    renderHistory(cmd);
-    renderLastResult(cmd);
+    renderStats(cmd);
 
     events.addEventBinding(CustomUIEventBindingType.Activating, "#CloseButton", EventData.of("Action", "Close"), false);
-    events.addEventBinding(CustomUIEventBindingType.Activating, "#Roll1Button", EventData.of("Action", "Roll").append("Count", "1"), false);
-    events.addEventBinding(CustomUIEventBindingType.Activating, "#Roll5Button", EventData.of("Action", "Roll").append("Count", "5"), false);
-    events.addEventBinding(CustomUIEventBindingType.Activating, "#Roll10Button", EventData.of("Action", "Roll").append("Count", "10"), false);
-    events.addEventBinding(CustomUIEventBindingType.Activating, "#ClearHistoryButton", EventData.of("Action", "ClearHistory"), false);
+    events.addEventBinding(CustomUIEventBindingType.Activating, "#Roll1Button",   EventData.of("Action", "Roll").append("Count", "1"),   false);
+    events.addEventBinding(CustomUIEventBindingType.Activating, "#Roll10Button",  EventData.of("Action", "Roll").append("Count", "10"),  false);
+    events.addEventBinding(CustomUIEventBindingType.Activating, "#Roll100Button", EventData.of("Action", "Roll").append("Count", "100"), false);
+    events.addEventBinding(CustomUIEventBindingType.Activating, "#ResetButton",   EventData.of("Action", "Reset"),  false);
     events.addEventBinding(CustomUIEventBindingType.ValueChanged, "#TableDropdown",
       new EventData().append("Action", "SelectTable").append("@SelectedType", "#TableDropdown.Value"), false);
   }
@@ -89,9 +87,10 @@ public class MysteryLootSimulatePage extends InteractiveCustomUIPage<MysteryLoot
     );
     cmd.set("#TableDropdown.Entries", entries);
     cmd.set("#TableDropdown.Value", SelectedTableId != null ? SelectedTableId : "");
-    cmd.set("#Roll1Button.Disabled", SelectedTableId == null);
-    cmd.set("#Roll5Button.Disabled", SelectedTableId == null);
-    cmd.set("#Roll10Button.Disabled", SelectedTableId == null);
+    boolean has = SelectedTableId != null;
+    cmd.set("#Roll1Button.Disabled", !has);
+    cmd.set("#Roll10Button.Disabled", !has);
+    cmd.set("#Roll100Button.Disabled", !has);
   }
 
   private void renderItemList(UICommandBuilder cmd) {
@@ -105,37 +104,39 @@ public class MysteryLootSimulatePage extends InteractiveCustomUIPage<MysteryLoot
       String pct = totalWeight > 0
         ? String.format("%.3f%%", (item.DropWeight / totalWeight) * 100.0)
         : "0%";
-      boolean isLast = LastRolledItem != null && item.ItemId.equals(LastRolledItem.ItemId);
-
       String sel = "#ItemListContainer[" + i + "]";
       cmd.append("#ItemListContainer", "MysteryLoot/Pages/Components/LootItemRow.ui");
       cmd.set(sel + " #LootItemSlot.ItemId", item.ItemId);
       cmd.set(sel + " #LootItemSlot.Quantity", item.Amount);
       cmd.set(sel + " #ItemIdLabel.Text", item.ItemId);
       cmd.set(sel + " #ItemChanceLabel.Text", "x" + item.Amount + "  |  w" + String.format("%.3f", item.DropWeight) + "  →  " + pct);
-      cmd.set(sel + " #RolledIndicator.Visible", isLast);
     }
   }
 
-  private void renderHistory(UICommandBuilder cmd) {
-    cmd.set("#TotalRollsLabel.Text", "Total Rolls: " + TotalRolls);
-    cmd.set("#ClearHistoryButton.Visible", !History.isEmpty());
-    int i = 0;
-    for (String entry : History) {
-      String sel = "#HistoryListContainer[" + i + "]";
-      cmd.append("#HistoryListContainer", "MysteryLoot/Pages/Components/HistoryRow.ui");
-      cmd.set(sel + " #HistoryEntryLabel.Text", entry);
-      i++;
-    }
-  }
+  private void renderStats(UICommandBuilder cmd) {
+    boolean hasData = TotalRolls > 0;
+    cmd.set("#StatsPanel.Visible", hasData);
+    cmd.set("#ResetButton.Visible", hasData);
+    cmd.set("#TotalRollsLabel.Text", TotalRolls + " Total Rolls");
 
-  private void renderLastResult(UICommandBuilder cmd) {
-    boolean has = LastRolledItem != null;
-    cmd.set("#ResultPanel.Visible", has);
-    if (has) {
-      cmd.set("#ResultItemSlot.ItemId", LastRolledItem.ItemId);
-      cmd.set("#ResultItemSlot.Quantity", LastRolledItem.Amount);
-      cmd.set("#ResultItemIdLabel.Text", LastRolledItem.ItemId + "  x" + LastRolledItem.Amount);
+    if (!hasData) return;
+
+    // Sort by most rolled descending
+    List<Map.Entry<String, Integer>> sorted = new ArrayList<>(RollCounts.entrySet());
+    sorted.sort((a, b) -> b.getValue() - a.getValue());
+
+    for (int i = 0; i < sorted.size(); i++) {
+      String itemId = sorted.get(i).getKey();
+      int count = sorted.get(i).getValue();
+      int amount = ItemAmounts.getOrDefault(itemId, 1);
+      double pct = TotalRolls > 0 ? (count / (double) TotalRolls) * 100.0 : 0;
+
+      String sel = "#StatsListContainer[" + i + "]";
+      cmd.append("#StatsListContainer", "MysteryLoot/Pages/Components/StatsRow.ui");
+      cmd.set(sel + " #StatsItemSlot.ItemId", itemId);
+      cmd.set(sel + " #StatsItemSlot.Quantity", amount);
+      cmd.set(sel + " #StatsItemIdLabel.Text", itemId);
+      cmd.set(sel + " #StatsCountLabel.Text", count + "x rolled  (" + String.format("%.2f", pct) + "%)");
     }
   }
 
@@ -158,15 +159,15 @@ public class MysteryLootSimulatePage extends InteractiveCustomUIPage<MysteryLoot
         var tables = MysteryLootPlugin.INSTANCE.Manager.GetAllLootTables();
         SelectedTableId = (data.SelectedType != null && tables.containsKey(data.SelectedType))
           ? data.SelectedType : null;
-        LastRolledItem = null;
-        History.clear();
+        RollCounts.clear();
+        ItemAmounts.clear();
         TotalRolls = 0;
         this.rebuild();
         return;
 
-      case "ClearHistory":
-        History.clear();
-        LastRolledItem = null;
+      case "Reset":
+        RollCounts.clear();
+        ItemAmounts.clear();
         TotalRolls = 0;
         this.rebuild();
         return;
@@ -177,18 +178,13 @@ public class MysteryLootSimulatePage extends InteractiveCustomUIPage<MysteryLoot
         try { if (data.Count != null) count = Integer.parseInt(data.Count); }
         catch (Exception ignored) {}
 
-        MysteryLootTableItem lastResult = null;
         for (int i = 0; i < count; i++) {
           MysteryLootTableItem rolled = MysteryLootPlugin.INSTANCE.Manager.RollLootTable(SelectedTableId);
           if (rolled == null) continue;
-          lastResult = rolled;
           TotalRolls++;
-          String entry = "#" + TotalRolls + "  →  " + rolled.ItemId + "  x" + rolled.Amount;
-          History.addFirst(entry);
-          if (History.size() > MAX_HISTORY) History.removeLast();
+          RollCounts.merge(rolled.ItemId, 1, Integer::sum);
+          ItemAmounts.putIfAbsent(rolled.ItemId, rolled.Amount);
         }
-        if (lastResult != null) LastRolledItem = lastResult;
-        // Always rebuild so item list containers reset (avoids duplicate rows)
         this.rebuild();
         return;
     }

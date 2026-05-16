@@ -31,7 +31,7 @@ $C.@DecoratedContainer {
 
     // ── Item List ──────────────────────────────────────────────────────────
     Label {
-      Text: "Items in Table";
+      Text: "Drop Weights";
       Style: (TextColor: #8f9dae);
     }
 
@@ -54,82 +54,6 @@ $C.@DecoratedContainer {
     Group { Anchor: (Height: 2); Background: (Color: #2b3542); }
     Group { Anchor: (Height: 10); }
 
-    // ── Last Result ────────────────────────────────────────────────────────
-    Group #ResultPanel {
-      LayoutMode: Left;
-      Anchor: (Left: 0, Right: 0, Height: 60);
-      Visible: false;
-
-      Group {
-        Anchor: (Width: 52, Top: 0, Bottom: 0);
-        Background: (Color: #1a2530);
-        Padding: 2;
-
-        ItemSlotButton {
-          Anchor: (Full: 0);
-          Disabled: true;
-
-          ItemSlot #ResultItemSlot {
-            Anchor: (Full: 0);
-            ShowQualityBackground: true;
-            ShowQuantity: true;
-          }
-        }
-      }
-
-      Group { Anchor: (Width: 10); }
-
-      Label #ResultItemIdLabel {
-        FlexWeight: 1;
-        Style: (
-          TextColor: #62ffc0,
-          FontSize: 14,
-        );
-        Text: "";
-      }
-    }
-
-    Group { Anchor: (Height: 10); }
-    Group { Anchor: (Height: 2); Background: (Color: #2b3542); }
-    Group { Anchor: (Height: 10); }
-
-    // ── History ────────────────────────────────────────────────────────────
-    Group {
-      LayoutMode: Left;
-      Anchor: (Left: 0, Right: 0, Height: 20);
-
-      Label #TotalRollsLabel {
-        FlexWeight: 1;
-        Style: (TextColor: #8f9dae);
-        Text: "Total Rolls: 0";
-      }
-
-      $C.@SecondaryTextButton #ClearHistoryButton {
-        Anchor: (Top: 0, Bottom: 0, Width: 60);
-        Text: "Clear";
-        Visible: false;
-      }
-    }
-
-    Group { Anchor: (Height: 6); }
-
-    Group {
-      Anchor: (Left: 0, Right: 0);
-      FlexWeight: 1;
-      LayoutMode: TopScrolling;
-      ScrollbarStyle: $C.@DefaultScrollbarStyle;
-      Padding: (Right: 4);
-
-      Group #HistoryListContainer {
-        LayoutMode: Top;
-        Anchor: (Left: 0, Right: 0);
-      }
-    }
-
-    Group { Anchor: (Height: 10); }
-    Group { Anchor: (Height: 2); Background: (Color: #2b3542); }
-    Group { Anchor: (Height: 8); }
-
     // ── Roll Buttons ───────────────────────────────────────────────────────
     Group {
       Anchor: (Left: 0, Right: 0, Height: 40);
@@ -143,18 +67,56 @@ $C.@DecoratedContainer {
 
       Group { Anchor: (Width: 6); }
 
-      $C.@TextButton #Roll5Button {
-        FlexWeight: 1;
-        Anchor: (Top: 0, Bottom: 0);
-        Text: "Roll x5";
-      }
-
-      Group { Anchor: (Width: 6); }
-
       $C.@TextButton #Roll10Button {
         FlexWeight: 1;
         Anchor: (Top: 0, Bottom: 0);
         Text: "Roll x10";
+      }
+
+      Group { Anchor: (Width: 6); }
+
+      $C.@TextButton #Roll100Button {
+        FlexWeight: 1;
+        Anchor: (Top: 0, Bottom: 0);
+        Text: "Roll x100";
+      }
+    }
+
+    Group { Anchor: (Height: 10); }
+    Group { Anchor: (Height: 2); Background: (Color: #2b3542); }
+    Group { Anchor: (Height: 10); }
+
+    // ── Stats Overview ─────────────────────────────────────────────────────
+    Group {
+      LayoutMode: Left;
+      Anchor: (Left: 0, Right: 0, Height: 20);
+
+      Label #TotalRollsLabel {
+        FlexWeight: 1;
+        Style: (TextColor: #8f9dae);
+        Text: "";
+      }
+
+      $C.@CancelTextButton #ResetButton {
+        Anchor: (Top: 0, Bottom: 0, Width: 65);
+        Text: "Reset";
+        Visible: false;
+      }
+    }
+
+    Group { Anchor: (Height: 6); }
+
+    Group #StatsPanel {
+      Anchor: (Left: 0, Right: 0);
+      FlexWeight: 1;
+      LayoutMode: TopScrolling;
+      ScrollbarStyle: $C.@DefaultScrollbarStyle;
+      Padding: (Right: 4);
+      Visible: false;
+
+      Group #StatsListContainer {
+        LayoutMode: Top;
+        Anchor: (Left: 0, Right: 0);
       }
     }
 

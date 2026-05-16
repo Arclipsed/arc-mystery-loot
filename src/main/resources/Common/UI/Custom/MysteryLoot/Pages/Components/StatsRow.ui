@@ -1,0 +1,49 @@
+Group #StatsRow {
+  LayoutMode: Left;
+  Anchor: (Left: 0, Right: 0, Height: 52);
+  Padding: (Vertical: 3);
+
+  // Item icon
+  Group {
+    Anchor: (Width: 46, Top: 0, Bottom: 0);
+    Background: (Color: #1a2530);
+    Padding: 2;
+
+    ItemSlotButton {
+      Anchor: (Full: 0);
+      Disabled: true;
+
+      ItemSlot #StatsItemSlot {
+        Anchor: (Full: 0);
+        ShowQualityBackground: true;
+        ShowQuantity: true;
+      }
+    }
+  }
+
+  Group { Anchor: (Width: 8); }
+
+  Group {
+    FlexWeight: 1;
+    LayoutMode: Top;
+    Anchor: (Top: 0, Bottom: 0);
+
+    Label #StatsItemIdLabel {
+      Style: (
+        TextColor: #dce8f5,
+        FontSize: 13,
+      );
+      Text: "";
+    }
+
+    Group { Anchor: (Height: 4); }
+
+    Label #StatsCountLabel {
+      Style: (
+        TextColor: #62ffc0,
+        FontSize: 11,
+      );
+      Text: "";
+    }
+  }
+}
