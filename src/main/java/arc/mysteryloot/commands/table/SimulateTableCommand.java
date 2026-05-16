@@ -13,10 +13,10 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import arc.mysteryloot.MysteryLootPlugin;
 import arc.mysteryloot.managers.MysteryLootCommandPermissionManager;
 
-public class RollTableCommand extends AbstractPlayerCommand {
+public class SimulateTableCommand extends AbstractPlayerCommand {
 
-  public RollTableCommand() {
-    super("roll", "Open the loot table simulator");
+  public SimulateTableCommand() {
+    super("simulate", "Open the loot table simulator");
     requirePermission(MysteryLootCommandPermissionManager.AdminCommandPermissions.MYSTERYLOOT_ADMIN);
   }
 
@@ -28,6 +28,6 @@ public class RollTableCommand extends AbstractPlayerCommand {
     @Nonnull PlayerRef playerRef,
     @Nonnull World world
   ) {
-    MysteryLootPlugin.INSTANCE.Manager.UI.OpenRollPage(ref, store, null);
+    MysteryLootPlugin.INSTANCE.Manager.UI.OpenSimulatePage(ref, store, null);
   }
 }
