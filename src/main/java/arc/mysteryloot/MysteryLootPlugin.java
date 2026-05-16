@@ -7,6 +7,7 @@ import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 
 import arc.mysteryloot.configs.MysteryLootTablesConfig;
 import arc.mysteryloot.managers.MysteryLootManager;
+import arc.mysteryloot.commands.MysteryLootCommand;
 import com.hypixel.hytale.server.core.util.Config;
 
 public class MysteryLootPlugin extends JavaPlugin {
@@ -28,10 +29,14 @@ public class MysteryLootPlugin extends JavaPlugin {
     TablesConfig.save();
 
     this.Manager = new MysteryLootManager(TablesConfig);
+    
+    this.getCommandRegistry().registerCommand(new MysteryLootCommand("mysteryloot", "Manage Mystery Loot tables"));
   }
 
   @Override
   protected void start() {
+    arc.mysteryloot.managers.MysteryLootCommandPermissionManager.InitUserGroupPermissions();
+    arc.mysteryloot.managers.MysteryLootCommandPermissionManager.InitAdminGroupPermissions();
     return;
   }
 }
