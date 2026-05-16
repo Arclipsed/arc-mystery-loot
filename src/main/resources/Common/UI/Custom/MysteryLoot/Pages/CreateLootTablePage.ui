@@ -1,0 +1,51 @@
+$C = "../../Common.ui";
+
+$C.@DecoratedContainer {
+  @CloseButton = true;
+  Anchor: (Left: 50, Top: 80, Width: 440, Height: 280, Bottom: 80);
+
+  #Title {
+    Label {
+      Style: (
+        ...$C.@TitleStyle,
+        HorizontalAlignment: Center,
+      );
+      Padding: (Horizontal: 19);
+      Text: "Create Loot Table";
+    }
+  }
+
+  #Content {
+    FlexWeight: 1;
+    LayoutMode: Top;
+    Padding: (Horizontal: 12, Top: 8, Bottom: 12);
+
+    Label {
+      Text: "Table Name";
+      Style: (TextColor: #8f9dae);
+    }
+
+    Group { Anchor: (Height: 8); }
+
+    $C.@TextField #TableNameInput {
+      @Anchor = (Height: 40);
+      PlaceholderText: "Unique name (e.g. Zombie_Drops)...";
+    }
+
+    Group { Anchor: (Height: 8); }
+
+    Label #ErrorLabel {
+      Style: (TextColor: #e05555);
+      Visible: false;
+    }
+
+    Group { Anchor: (Height: 16); }
+
+    $C.@TextButton #CreateButton {
+      Anchor: (Left: 0, Right: 0, Height: 40);
+      Text: "Create Table";
+    }
+
+    Group { Anchor: (Height: 4); }
+  }
+}

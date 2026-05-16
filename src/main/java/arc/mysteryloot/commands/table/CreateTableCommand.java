@@ -1,4 +1,4 @@
-package arc.mysteryloot.commands;
+package arc.mysteryloot.commands.table;
 
 import javax.annotation.Nonnull;
 
@@ -13,15 +13,13 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import arc.mysteryloot.MysteryLootPlugin;
 import arc.mysteryloot.managers.MysteryLootCommandPermissionManager;
 
-public class MysteryLootCommand extends AbstractPlayerCommand {
+public class CreateTableCommand extends AbstractPlayerCommand {
 
-  public MysteryLootCommand(
-    @Nonnull String name, 
+  public CreateTableCommand(
+    @Nonnull String name,
     @Nonnull String description
   ) {
     super(name, description);
-    
-    // Require admin permission
     requirePermission(MysteryLootCommandPermissionManager.AdminCommandPermissions.MYSTERYLOOT_ADMIN);
   }
 
@@ -33,6 +31,6 @@ public class MysteryLootCommand extends AbstractPlayerCommand {
     @Nonnull PlayerRef playerRef,
     @Nonnull World world
   ) {
-    MysteryLootPlugin.INSTANCE.Manager.UI.OpenLootTableManagerPage(ref, store, null);
+    MysteryLootPlugin.INSTANCE.Manager.UI.OpenCreateLootTablePage(ref, store);
   }
 }
