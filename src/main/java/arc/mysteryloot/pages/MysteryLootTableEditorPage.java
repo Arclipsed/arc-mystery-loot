@@ -145,9 +145,13 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
   private void updateItemList(UICommandBuilder cmd) {
     List<DropdownEntryInfo> entries = new ArrayList<>();
     entries.add(new DropdownEntryInfo(LocalizableString.fromString("-- Create Item --"), "-1"));
+    double totalWeight = EditingTable.Items.stream().mapToDouble(i -> i.DropWeight).sum();
     for (int i = 0; i < EditingTable.Items.size(); i++) {
       MysteryLootTableItem it = EditingTable.Items.get(i);
-      String label = it.ItemId + "  x" + it.Amount + "  (w:" + it.DropWeight + ")";
+      String pct = totalWeight > 0
+        ? String.format("%.1f%%", (it.DropWeight / totalWeight) * 100.0)
+        : "0%";
+      String label = it.ItemId + "  x" + it.Amount + "  (w:" + it.DropWeight + "  →  " + pct + ")";
       entries.add(new DropdownEntryInfo(LocalizableString.fromString(label), String.valueOf(i)));
     }
     cmd.set("#ItemListDropdown.Entries", entries);
@@ -307,11 +311,13 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
         newItem.Amount = ItemFormAmount;
         newItem.DropWeight = ItemFormDropWeight;
         if (EditingItemIndex >= 0 && EditingItemIndex < EditingTable.Items.size()) {
+          // Updating existing — stay on the same item
           EditingTable.Items.set(EditingItemIndex, newItem);
         } else {
+          // Adding new — select the newly added item
           EditingTable.Items.add(newItem);
+          EditingItemIndex = EditingTable.Items.size() - 1;
         }
-        resetItemForm();
         break;
 
       case "RemoveItem":
