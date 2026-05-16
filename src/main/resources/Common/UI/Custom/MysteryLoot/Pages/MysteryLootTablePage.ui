@@ -5,7 +5,7 @@ $C.@PageOverlay {
 
   $C.@DecoratedContainer {
     @CloseButton = true;
-    Anchor: (Width: 440, Height: 480);
+    Anchor: (Width: 460, Height: 500);
 
     #Title {
       Label #TableNameLabel {
@@ -35,7 +35,7 @@ $C.@PageOverlay {
 
       Group { Anchor: (Height: 10); }
 
-      // Scrollable horizontal-wrapping item grid
+      // Scrollable item card row
       Group {
         Anchor: (Left: 0, Right: 0);
         FlexWeight: 1;
@@ -60,7 +60,7 @@ $C.@PageOverlay {
         Visible: false;
 
         Group {
-          Anchor: (Width: 64, Height: 64, Top: 8);
+          Anchor: (Width: 72, Height: 72, Top: 4);
           Background: (Color: #1a2530);
           Padding: 3;
 

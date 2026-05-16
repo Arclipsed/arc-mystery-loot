@@ -72,14 +72,14 @@ public class MysteryLootApi {
   }
 
   /**
-   * Opens the player-facing loot roll dialog for the given table.
+   * Opens the player-facing Mystery Loot table page for the given table.
    * Call this from your own plugin when a player interacts with a loot source.
    */
-  public static void OpenPlayerLootPage(
+  public static void OpenMysteryLootTablePage(
     @Nonnull Ref<EntityStore> ref,
     @Nonnull Store<EntityStore> store,
     @Nonnull String tableId
   ) {
-    MysteryLootPlugin.INSTANCE.Manager.UI.OpenPlayerPage(ref, store, tableId);
+    MysteryLootPlugin.INSTANCE.Manager.UI.OpenMysteryLootTablePage(ref, store, tableId);
   }
 }

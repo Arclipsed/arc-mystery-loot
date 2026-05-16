@@ -1,0 +1,34 @@
+// Bigger item card used in the player loot table page
+// Shows the item icon + drop % below
+Group #LootItemCard {
+  Anchor: (Width: 80, Height: 100);
+  LayoutMode: Top;
+  Padding: (Right: 6, Bottom: 6);
+
+  Group {
+    Anchor: (Left: 0, Right: 0, Height: 80);
+    Background: (Color: #1a2530);
+    Padding: 3;
+
+    ItemSlotButton {
+      Anchor: (Full: 0);
+      Disabled: true;
+
+      ItemSlot #LootItemCardSlot {
+        Anchor: (Full: 0);
+        ShowQualityBackground: true;
+        ShowQuantity: true;
+      }
+    }
+  }
+
+  Label #LootItemPctLabel {
+    Anchor: (Left: 0, Right: 0, Height: 16);
+    Style: (
+      TextColor: #8f9dae,
+      FontSize: 10,
+      HorizontalAlignment: Center,
+    );
+    Text: "0%";
+  }
+}

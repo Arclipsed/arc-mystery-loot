@@ -49,6 +49,6 @@ public class PreviewTableCommand extends AbstractPlayerCommand {
       return;
     }
 
-    MysteryLootPlugin.INSTANCE.Manager.UI.OpenPlayerPage(ref, store, tableId);
+    MysteryLootPlugin.INSTANCE.Manager.UI.OpenMysteryLootTablePage(ref, store, tableId);
   }
 }

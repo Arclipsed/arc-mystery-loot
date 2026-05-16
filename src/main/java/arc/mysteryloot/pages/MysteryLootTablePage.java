@@ -1,8 +1,5 @@
 package arc.mysteryloot.pages;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -25,18 +22,17 @@ import arc.mysteryloot.classes.MysteryLootTable;
 import arc.mysteryloot.classes.MysteryLootTableItem;
 
 /**
- * Player-facing loot roll page.
- * Shows all possible items in the table, then lets the player roll.
- * After rolling, the result item is revealed.
+ * Player-facing Mystery Loot page.
+ * Shows all possible items in the table with their drop %, then lets the player roll.
  */
-public class MysteryLootPlayerPage extends InteractiveCustomUIPage<MysteryLootPlayerPage.MysteryLootPlayerPageEventData> {
+public class MysteryLootTablePage extends InteractiveCustomUIPage<MysteryLootTablePage.MysteryLootTablePageEventData> {
 
   @Nonnull private final String TableId;
   @Nullable private MysteryLootTableItem RolledItem;
   private boolean HasRolled = false;
 
-  public MysteryLootPlayerPage(@Nonnull PlayerRef playerRef, @Nonnull String tableId) {
-    super(playerRef, CustomPageLifetime.CanDismiss, MysteryLootPlayerPageEventData.CODEC);
+  public MysteryLootTablePage(@Nonnull PlayerRef playerRef, @Nonnull String tableId) {
+    super(playerRef, CustomPageLifetime.CanDismiss, MysteryLootTablePageEventData.CODEC);
     this.TableId = tableId;
   }
 
@@ -49,7 +45,7 @@ public class MysteryLootPlayerPage extends InteractiveCustomUIPage<MysteryLootPl
     @Nonnull UIEventBuilder events,
     @Nonnull Store<EntityStore> store
   ) {
-    cmd.append("MysteryLoot/Pages/MysteryLootPlayerPage.ui");
+    cmd.append("MysteryLoot/Pages/MysteryLootTablePage.ui");
 
     cmd.set("#TableNameLabel.Text", TableId.replace("_", " "));
     cmd.set("#RollButton.Disabled", HasRolled);
@@ -67,12 +63,19 @@ public class MysteryLootPlayerPage extends InteractiveCustomUIPage<MysteryLootPl
     MysteryLootTable table = MysteryLootPlugin.INSTANCE.Manager.GetLootTable(TableId);
     if (table == null) return;
 
+    double totalWeight = table.Items.stream().mapToDouble(i -> i.DropWeight).sum();
+
     for (int i = 0; i < table.Items.size(); i++) {
       MysteryLootTableItem item = table.Items.get(i);
+      String pct = totalWeight > 0
+        ? String.format("%.1f%%", (item.DropWeight / totalWeight) * 100.0)
+        : "0%";
+
       String sel = "#LootItemsContainer[" + i + "]";
-      cmd.append("#LootItemsContainer", "MysteryLoot/Pages/Components/PlayerLootItemSlot.ui");
-      cmd.set(sel + " #PlayerLootItemSlot.ItemId", item.ItemId);
-      cmd.set(sel + " #PlayerLootItemSlot.Quantity", item.Amount);
+      cmd.append("#LootItemsContainer", "MysteryLoot/Pages/Components/LootItemCard.ui");
+      cmd.set(sel + " #LootItemCardSlot.ItemId", item.ItemId);
+      cmd.set(sel + " #LootItemCardSlot.Quantity", item.Amount);
+      cmd.set(sel + " #LootItemPctLabel.Text", pct);
     }
   }
 
@@ -92,7 +95,7 @@ public class MysteryLootPlayerPage extends InteractiveCustomUIPage<MysteryLootPl
   public void handleDataEvent(
     @Nonnull Ref<EntityStore> ref,
     @Nonnull Store<EntityStore> store,
-    @Nonnull MysteryLootPlayerPageEventData data
+    @Nonnull MysteryLootTablePageEventData data
   ) {
     if (data.Action == null) return;
 
@@ -115,14 +118,14 @@ public class MysteryLootPlayerPage extends InteractiveCustomUIPage<MysteryLootPl
 
   // ── Event Data ─────────────────────────────────────────────────────────────
 
-  public static class MysteryLootPlayerPageEventData {
+  public static class MysteryLootTablePageEventData {
     @Nullable public String Action;
 
-    public MysteryLootPlayerPageEventData() {}
+    public MysteryLootTablePageEventData() {}
 
     @Nonnull
-    public static final BuilderCodec<MysteryLootPlayerPageEventData> CODEC = BuilderCodec
-      .builder(MysteryLootPlayerPageEventData.class, MysteryLootPlayerPageEventData::new)
+    public static final BuilderCodec<MysteryLootTablePageEventData> CODEC = BuilderCodec
+      .builder(MysteryLootTablePageEventData.class, MysteryLootTablePageEventData::new)
       .append(new KeyedCodec<>("Action", Codec.STRING), (d, v) -> d.Action = v, d -> d.Action).add()
       .build();
   }
