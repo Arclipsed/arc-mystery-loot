@@ -151,7 +151,7 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
       String pct = totalWeight > 0
         ? String.format("%.1f%%", (it.DropWeight / totalWeight) * 100.0)
         : "0%";
-      String label = it.ItemId + "  x" + it.Amount + "  (w:" + it.DropWeight + "  ->  " + pct + ")";
+      String label = it.ItemId + " x" + it.Amount + " w" + it.DropWeight + " -> " + pct;
       entries.add(new DropdownEntryInfo(LocalizableString.fromString(label), String.valueOf(i)));
     }
     cmd.set("#ItemListDropdown.Entries", entries);
