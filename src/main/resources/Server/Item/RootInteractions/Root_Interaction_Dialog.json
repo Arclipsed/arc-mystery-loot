@@ -1,0 +1,9 @@
+{
+  "RequireNewClick": true,
+  "Cooldown": {
+    "Cooldown": 1
+  },
+  "Interactions": [
+    "Dialog"
+  ]
+}

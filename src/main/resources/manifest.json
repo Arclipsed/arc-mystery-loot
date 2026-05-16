@@ -1,0 +1,22 @@
+{
+    "Group": "Arc",
+    "Name": "MysteryLoot",
+    "Version": "1.0.0",
+    "Description": "Mystery Loot For Hytale - Arc Plugins.",
+    "Authors": [
+        {
+            "Name": "Arc",
+            "Email": "arclipse@arctale.com",
+            "Url": "https://discord.gg/RHrG2ppRhE"
+        }
+    ],
+    "Website": "https://discord.gg/RHrG2ppRhE",
+    "DisabledByDefault": false,
+    "IncludesAssetPack": true,
+    "Dependencies": {
+        "Arc:Core": "1.0.0"
+    },
+    "OptionalDependencies": {},
+    "ServerVersion": "2026.03.26-89796e57b",
+    "Main": "arc.mysteryloot.MysteryLootPlugin"
+}

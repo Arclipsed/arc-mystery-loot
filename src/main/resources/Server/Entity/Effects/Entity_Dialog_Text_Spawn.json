@@ -1,0 +1,7 @@
+{
+  "ApplicationEffects": {
+    "LocalSoundEventId": "SFX_Dialog_Text"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": true
+}
