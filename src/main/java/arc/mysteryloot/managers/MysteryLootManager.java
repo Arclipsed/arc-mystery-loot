@@ -23,15 +23,6 @@ public class MysteryLootManager {
     return TablesConfig.get().GetRewardPool(tableId);
   }
 
-  @Nullable
-  public MysteryLootTableItem GetLootTableItem(String tableId, int itemIndex) {
-    MysteryLootTable table = GetLootTable(tableId);
-    if (table == null || itemIndex < 0 || itemIndex >= table.Items.size()) {
-      return null;
-    }
-    return table.Items.get(itemIndex);
-  }
-
   public boolean CreateMysteryLootTable(String tableId) {
     MysteryLootTablesConfig config = TablesConfig.get();
     if (config.RewardPools.containsKey(tableId)) {
@@ -60,6 +51,16 @@ public class MysteryLootManager {
     config.SaveRewardPool(tableId, newTable);
     TablesConfig.save();
     return true;
+  }
+
+
+  @Nullable
+  public MysteryLootTableItem GetLootTableItem(String tableId, int itemIndex) {
+    MysteryLootTable table = GetLootTable(tableId);
+    if (table == null || itemIndex < 0 || itemIndex >= table.Items.size()) {
+      return null;
+    }
+    return table.Items.get(itemIndex);
   }
 
   public boolean CreateLootTableItem(String tableId, MysteryLootTableItem item) {
