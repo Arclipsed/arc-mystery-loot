@@ -67,13 +67,7 @@ public class LootRollSystem extends EntityTickingSystem<EntityStore> {
         ref, commandBuffer.getStore(), playerRef, viewer.ItemId, viewer.Amount
       );
 
-      // Close animation page
-      var player = store.getComponent(ref, Player.getComponentType());
-      if (player != null) {
-        player.getPageManager().setPage(ref, commandBuffer.getStore(), Page.None);
-      }
-
-      // Open result page
+      // Open result page — this replaces the animation page automatically
       MysteryLootPlugin.INSTANCE.Manager.UI.OpenResultPage(
         ref, commandBuffer.getStore(), viewer.ItemId, viewer.Amount
       );
