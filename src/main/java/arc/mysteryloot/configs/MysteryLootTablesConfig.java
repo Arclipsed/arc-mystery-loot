@@ -58,6 +58,22 @@ public class MysteryLootTablesConfig {
       )
     );
 
+    exampleLootTable.Items.add(
+      new MysteryLootTableItem(
+        "Food_Bread",
+        1.0,
+        1
+      )
+    );
+
+    exampleLootTable.Items.add(
+      new MysteryLootTableItem(
+        "Food_Fish_Raw",
+        2.0,
+        1
+      )
+    );
+
     LootTablePools.computeIfAbsent("Food_Loot_Table", id -> exampleLootTable);
   }
 
