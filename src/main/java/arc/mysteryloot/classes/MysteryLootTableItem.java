@@ -14,6 +14,12 @@ public class MysteryLootTableItem {
 
   public MysteryLootTableItem() {}
   
+  public MysteryLootTableItem(String itemId, double dropWeight, int amount) {
+    this.ItemId = itemId;
+    this.DropWeight = dropWeight;
+    this.Amount = amount;
+  }
+  
   public MysteryLootTableItem(MysteryLootTableItem other) {
     if (other != null) {
       this.ItemId = other.ItemId;

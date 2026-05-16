@@ -27,12 +27,12 @@ public class MysteryLootManager {
 
   @Nonnull
   public Map<String, MysteryLootTable> GetAllLootTables() {
-    return TablesConfig.get().RewardPools;
+    return TablesConfig.get().LootTablePools;
   }
 
   public boolean CreateMysteryLootTable(String tableId) {
     MysteryLootTablesConfig config = TablesConfig.get();
-    if (config.RewardPools.containsKey(tableId)) {
+    if (config.LootTablePools.containsKey(tableId)) {
       return false;
     }
     config.SaveRewardPool(tableId, new MysteryLootTable());
@@ -42,7 +42,7 @@ public class MysteryLootManager {
 
   public boolean DeleteMysteryLootTable(String tableId) {
     MysteryLootTablesConfig config = TablesConfig.get();
-    if (!config.RewardPools.containsKey(tableId)) {
+    if (!config.LootTablePools.containsKey(tableId)) {
       return false;
     }
     config.DeleteRewardPool(tableId);
@@ -52,7 +52,7 @@ public class MysteryLootManager {
 
   public boolean UpdateMysteryLootTable(String tableId, MysteryLootTable newTable) {
     MysteryLootTablesConfig config = TablesConfig.get();
-    if (!config.RewardPools.containsKey(tableId)) {
+    if (!config.LootTablePools.containsKey(tableId)) {
       return false;
     }
     config.SaveRewardPool(tableId, newTable);
@@ -62,7 +62,7 @@ public class MysteryLootManager {
 
   public boolean RenameMysteryLootTable(String oldId, String newId, MysteryLootTable table) {
     MysteryLootTablesConfig config = TablesConfig.get();
-    if (!config.RewardPools.containsKey(oldId)) {
+    if (!config.LootTablePools.containsKey(oldId)) {
       return false;
     }
     config.RenameRewardPool(oldId, newId, table);

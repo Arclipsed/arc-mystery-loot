@@ -11,47 +11,82 @@ import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.map.MapCodec;
 
 import arc.mysteryloot.classes.MysteryLootTable;
+import arc.mysteryloot.classes.MysteryLootTableItem;
 
 public class MysteryLootTablesConfig {
 
   @Nonnull
-  public Map<String, MysteryLootTable> RewardPools = new HashMap<>();
+  public Map<String, MysteryLootTable> LootTablePools = new HashMap<>();
 
   public MysteryLootTablesConfig() {}
 
   public void Init() {
-    if (RewardPools == null) {
-      RewardPools = new HashMap<>();
+    if (LootTablePools == null) {
+      LootTablePools = new HashMap<>();
     }
-    RewardPools.computeIfAbsent("Default_Loot", id -> new MysteryLootTable());
+    var exampleLootTable = new MysteryLootTable();
+
+    exampleLootTable.Items.add(
+      new MysteryLootTableItem(
+        "Plant_Fruit_Berries_Red",
+        1.0,
+        5
+      )
+    );
+
+    exampleLootTable.Items.add(
+      new MysteryLootTableItem(
+        "Plant_Fruit_Apple",
+        1.0,
+        2
+      )
+    );
+
+    exampleLootTable.Items.add(
+      new MysteryLootTableItem(
+        "Plant_Fruit_Pinkberry",
+        1.0,
+        1
+      )
+    );
+
+    exampleLootTable.Items.add(
+      new MysteryLootTableItem(
+        "Plant_Fruit_Coconut",
+        1.0,
+        1
+      )
+    );
+
+    LootTablePools.computeIfAbsent("Food_Loot_Table", id -> exampleLootTable);
   }
 
   @Nullable
   public MysteryLootTable GetRewardPool(String tableId) {
     if (tableId == null || tableId.isEmpty()) return null;
-    return RewardPools.get(tableId);
+    return LootTablePools.get(tableId);
   }
 
   public void SaveRewardPool(String tableId, MysteryLootTable config) {
-    RewardPools.put(tableId, config);
+    LootTablePools.put(tableId, config);
   }
 
   public void RenameRewardPool(String oldId, String newId, MysteryLootTable config) {
-    RewardPools.remove(oldId);
-    RewardPools.put(newId, config);
+    LootTablePools.remove(oldId);
+    LootTablePools.put(newId, config);
   }
 
   public void DeleteRewardPool(String tableId) {
-    RewardPools.remove(tableId);
+    LootTablePools.remove(tableId);
   }
 
   @Nonnull
   public static final BuilderCodec<MysteryLootTablesConfig> CODEC = BuilderCodec
     .builder(MysteryLootTablesConfig.class, MysteryLootTablesConfig::new)
     .append(
-      new KeyedCodec<>("RewardPools", new MapCodec<>(MysteryLootTable.CODEC, HashMap::new)),
-      (config, value) -> config.RewardPools = value != null ? new HashMap<>(value) : new HashMap<>(),
-      config -> config.RewardPools
+      new KeyedCodec<>("LootTablePools", new MapCodec<>(MysteryLootTable.CODEC, HashMap::new)),
+      (config, value) -> config.LootTablePools = value != null ? new HashMap<>(value) : new HashMap<>(),
+      config -> config.LootTablePools
     )
     .add()
     .build();
