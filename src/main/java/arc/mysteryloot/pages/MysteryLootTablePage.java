@@ -76,7 +76,7 @@ public class MysteryLootTablePage extends InteractiveCustomUIPage<MysteryLootTab
     for (int i = 0; i < sorted.size(); i++) {
       MysteryLootTableItem item = sorted.get(i);
       String pct = totalWeight > 0
-        ? String.format("%.1f%%", (item.DropWeight / totalWeight) * 100.0)
+        ? String.format("%.3f%%", (item.DropWeight / totalWeight) * 100.0)
         : "0%";
 
       String sel = "#LootItemsContainer[" + i + "]";
