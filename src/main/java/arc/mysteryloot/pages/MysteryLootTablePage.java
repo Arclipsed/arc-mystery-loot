@@ -1,5 +1,9 @@
 package arc.mysteryloot.pages;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -63,10 +67,14 @@ public class MysteryLootTablePage extends InteractiveCustomUIPage<MysteryLootTab
     MysteryLootTable table = MysteryLootPlugin.INSTANCE.Manager.GetLootTable(TableId);
     if (table == null) return;
 
+    // Sort rarest first (lowest DropWeight = rarest)
+    List<MysteryLootTableItem> sorted = new ArrayList<>(table.Items);
+    sorted.sort(Comparator.comparingDouble(i -> i.DropWeight));
+
     double totalWeight = table.Items.stream().mapToDouble(i -> i.DropWeight).sum();
 
-    for (int i = 0; i < table.Items.size(); i++) {
-      MysteryLootTableItem item = table.Items.get(i);
+    for (int i = 0; i < sorted.size(); i++) {
+      MysteryLootTableItem item = sorted.get(i);
       String pct = totalWeight > 0
         ? String.format("%.1f%%", (item.DropWeight / totalWeight) * 100.0)
         : "0%";
