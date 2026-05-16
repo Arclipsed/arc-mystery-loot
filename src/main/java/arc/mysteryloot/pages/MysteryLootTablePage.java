@@ -32,10 +32,12 @@ import arc.mysteryloot.classes.MysteryLootTableItem;
 public class MysteryLootTablePage extends InteractiveCustomUIPage<MysteryLootTablePage.MysteryLootTablePageEventData> {
 
   @Nonnull private final String TableId;
+  @Nonnull private final PlayerRef Player;
   private boolean HasRolled = false;
 
   public MysteryLootTablePage(@Nonnull PlayerRef playerRef, @Nonnull String tableId) {
     super(playerRef, CustomPageLifetime.CanDismiss, MysteryLootTablePageEventData.CODEC);
+    this.Player = playerRef;
     this.TableId = tableId;
   }
 
@@ -115,7 +117,7 @@ public class MysteryLootTablePage extends InteractiveCustomUIPage<MysteryLootTab
 
       case "Roll":
         if (HasRolled) break;
-        var rolled = MysteryLootPlugin.INSTANCE.Manager.RollLootTable(TableId);
+        var rolled = MysteryLootPlugin.INSTANCE.Manager.RollAndGiveLootTable(TableId, ref, store, Player);
         HasRolled = true;
         if (rolled != null) {
           MysteryLootPlugin.INSTANCE.Manager.UI.OpenResultPage(ref, store, rolled.ItemId, rolled.Amount);

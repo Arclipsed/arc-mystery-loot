@@ -4,6 +4,13 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.hypixel.hytale.builtin.adventure.shop.GiveItemInteraction;
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.inventory.ItemStack;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
 import arc.mysteryloot.classes.MysteryLootTable;
 import arc.mysteryloot.classes.MysteryLootTableItem;
@@ -137,6 +144,32 @@ public class MysteryLootManager {
       if (roll < cumulative) return item;
     }
     return table.Items.get(table.Items.size() - 1);
+  }
+
+  /**
+   * Rolls the loot table and gives the resulting item to the player.
+   * Returns the rolled item, or null if the table is empty or doesn't exist.
+   */
+  @Nullable
+  public MysteryLootTableItem RollAndGiveLootTable(
+    @Nonnull String tableId,
+    @Nonnull Ref<EntityStore> ref,
+    @Nonnull Store<EntityStore> store,
+    @Nonnull PlayerRef playerRef
+  ) {
+    MysteryLootTableItem rolled = RollLootTable(tableId);
+    if (rolled == null) return null;
+
+    Player player = store.getComponent(ref, Player.getComponentType());
+    if (player == null) return rolled;
+
+    var itemStack = new ItemStack(rolled.ItemId, rolled.Amount);
+    player.notifyPickupItem(ref, itemStack, null, store);
+
+    var giveItem = new GiveItemInteraction(rolled.ItemId, rolled.Amount);
+    giveItem.run(store, ref, playerRef);
+
+    return rolled;
   }
 
 }
