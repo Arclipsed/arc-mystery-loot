@@ -117,7 +117,7 @@ public class MysteryLootTablePage extends InteractiveCustomUIPage<MysteryLootTab
 
       case "Roll":
         if (HasRolled) break;
-        var rolled = MysteryLootPlugin.INSTANCE.Manager.RollAndGiveLootTable(TableId, ref, store, Player);
+        var rolled = MysteryLootPlugin.INSTANCE.Manager.RollLootTable(TableId);
         HasRolled = true;
         if (rolled != null) {
           var table = MysteryLootPlugin.INSTANCE.Manager.GetLootTable(TableId);

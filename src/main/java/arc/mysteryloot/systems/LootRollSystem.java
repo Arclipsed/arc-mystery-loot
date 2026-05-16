@@ -58,16 +58,22 @@ public class LootRollSystem extends EntityTickingSystem<EntityStore> {
       page.ShowNextRandomItem();
     }
 
-    // Animation done — reveal result
+    // Animation done — give the real item and reveal result
     if (viewer.AccumulatedTime >= viewer.TotalTime) {
       commandBuffer.removeComponent(ref, viewerType);
 
-      // Close animation page and open result page
+      // Give the item now that the animation is complete
+      MysteryLootPlugin.INSTANCE.Manager.GiveItem(
+        ref, commandBuffer.getStore(), playerRef, viewer.ItemId, viewer.Amount
+      );
+
+      // Close animation page
       var player = store.getComponent(ref, Player.getComponentType());
       if (player != null) {
         player.getPageManager().setPage(ref, commandBuffer.getStore(), Page.None);
       }
 
+      // Open result page
       MysteryLootPlugin.INSTANCE.Manager.UI.OpenResultPage(
         ref, commandBuffer.getStore(), viewer.ItemId, viewer.Amount
       );

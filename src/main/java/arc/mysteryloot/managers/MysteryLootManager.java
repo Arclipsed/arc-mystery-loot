@@ -39,9 +39,7 @@ public class MysteryLootManager {
 
   public boolean CreateMysteryLootTable(String tableId) {
     MysteryLootTablesConfig config = TablesConfig.get();
-    if (config.LootTablePools.containsKey(tableId)) {
-      return false;
-    }
+    if (config.LootTablePools.containsKey(tableId)) return false;
     config.SaveRewardPool(tableId, new MysteryLootTable());
     TablesConfig.save();
     return true;
@@ -49,9 +47,7 @@ public class MysteryLootManager {
 
   public boolean DeleteMysteryLootTable(String tableId) {
     MysteryLootTablesConfig config = TablesConfig.get();
-    if (!config.LootTablePools.containsKey(tableId)) {
-      return false;
-    }
+    if (!config.LootTablePools.containsKey(tableId)) return false;
     config.DeleteRewardPool(tableId);
     TablesConfig.save();
     return true;
@@ -59,9 +55,7 @@ public class MysteryLootManager {
 
   public boolean UpdateMysteryLootTable(String tableId, MysteryLootTable newTable) {
     MysteryLootTablesConfig config = TablesConfig.get();
-    if (!config.LootTablePools.containsKey(tableId)) {
-      return false;
-    }
+    if (!config.LootTablePools.containsKey(tableId)) return false;
     config.SaveRewardPool(tableId, newTable);
     TablesConfig.save();
     return true;
@@ -69,30 +63,23 @@ public class MysteryLootManager {
 
   public boolean RenameMysteryLootTable(String oldId, String newId, MysteryLootTable table) {
     MysteryLootTablesConfig config = TablesConfig.get();
-    if (!config.LootTablePools.containsKey(oldId)) {
-      return false;
-    }
+    if (!config.LootTablePools.containsKey(oldId)) return false;
     config.RenameRewardPool(oldId, newId, table);
     TablesConfig.save();
     return true;
   }
 
-
   @Nullable
   public MysteryLootTableItem GetLootTableItem(String tableId, int itemIndex) {
     MysteryLootTable table = GetLootTable(tableId);
-    if (table == null || itemIndex < 0 || itemIndex >= table.Items.size()) {
-      return null;
-    }
+    if (table == null || itemIndex < 0 || itemIndex >= table.Items.size()) return null;
     return table.Items.get(itemIndex);
   }
 
   public boolean CreateLootTableItem(String tableId, MysteryLootTableItem item) {
     MysteryLootTablesConfig config = TablesConfig.get();
     MysteryLootTable table = config.GetRewardPool(tableId);
-    if (table == null) {
-      return false;
-    }
+    if (table == null) return false;
     table.Items.add(item);
     TablesConfig.save();
     return true;
@@ -101,12 +88,7 @@ public class MysteryLootManager {
   public boolean UpdateLootTableItem(String tableId, int itemIndex, MysteryLootTableItem updatedItem) {
     MysteryLootTablesConfig config = TablesConfig.get();
     MysteryLootTable table = config.GetRewardPool(tableId);
-    if (table == null) {
-      return false;
-    }
-    if (itemIndex < 0 || itemIndex >= table.Items.size()) {
-      return false;
-    }
+    if (table == null || itemIndex < 0 || itemIndex >= table.Items.size()) return false;
     table.Items.set(itemIndex, updatedItem);
     TablesConfig.save();
     return true;
@@ -115,16 +97,12 @@ public class MysteryLootManager {
   public boolean DeleteLootTableItem(String tableId, int itemIndex) {
     MysteryLootTablesConfig config = TablesConfig.get();
     MysteryLootTable table = config.GetRewardPool(tableId);
-    if (table == null) {
-      return false;
-    }
-    if (itemIndex < 0 || itemIndex >= table.Items.size()) {
-      return false;
-    }
+    if (table == null || itemIndex < 0 || itemIndex >= table.Items.size()) return false;
     table.Items.remove(itemIndex);
     TablesConfig.save();
     return true;
   }
+
   /**
    * Picks a random item from the table using weighted selection.
    * Returns null if the table doesn't exist or has no items.
@@ -159,17 +137,28 @@ public class MysteryLootManager {
   ) {
     MysteryLootTableItem rolled = RollLootTable(tableId);
     if (rolled == null) return null;
-
-    Player player = store.getComponent(ref, Player.getComponentType());
-    if (player == null) return rolled;
-
-    var itemStack = new ItemStack(rolled.ItemId, rolled.Amount);
-    player.notifyPickupItem(ref, itemStack, null, store);
-
-    var giveItem = new GiveItemInteraction(rolled.ItemId, rolled.Amount);
-    giveItem.run(store, ref, playerRef);
-
+    GiveItem(ref, store, playerRef, rolled.ItemId, rolled.Amount);
     return rolled;
   }
 
+  /**
+   * Gives a specific item directly to a player.
+   * Called by LootRollSystem after the animation completes.
+   */
+  public void GiveItem(
+    @Nonnull Ref<EntityStore> ref,
+    @Nonnull Store<EntityStore> store,
+    @Nonnull PlayerRef playerRef,
+    @Nonnull String itemId,
+    int amount
+  ) {
+    Player player = store.getComponent(ref, Player.getComponentType());
+    if (player == null) return;
+
+    var itemStack = new ItemStack(itemId, amount);
+    player.notifyPickupItem(ref, itemStack, null, store);
+
+    var giveItem = new GiveItemInteraction(itemId, amount);
+    giveItem.run(store, ref, playerRef);
+  }
 }
