@@ -5,7 +5,7 @@ $C.@PageOverlay {
 
   $C.@DecoratedContainer {
     @CloseButton = true;
-    Anchor: (Width: 460, Height: 500);
+    Anchor: (Width: 562, Height: 520);
 
     #Title {
       Label #TableNameLabel {
@@ -31,9 +31,8 @@ $C.@PageOverlay {
         ScrollbarStyle: $C.@DefaultScrollbarStyle;
 
         Group #LootItemsContainer {
-          LayoutMode: Left;
+          LayoutMode: WrapLeft;
           Anchor: (Left: 0, Right: 0);
-          Padding: (Full: 4);
         }
       }
 
