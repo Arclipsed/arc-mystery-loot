@@ -2,16 +2,16 @@ $C = "../../Common.ui";
 
 $C.@DecoratedContainer {
   @CloseButton = true;
-  Anchor: (Left: 50, Top: 80, Width: 500, Height: 750, Bottom: 80);
+  Anchor: (Left: 50, Top: 80, Width: 500, Height: 780, Bottom: 80);
 
   #Title {
-    Label {
+    Label #PageTitle {
       Style: (
         ...$C.@TitleStyle,
         HorizontalAlignment: Center,
       );
       Padding: (Horizontal: 19);
-      Text: "Create Loot Table";
+      Text: "Loot Table Editor";
     }
   }
 
@@ -25,6 +25,29 @@ $C.@DecoratedContainer {
       LayoutMode: TopScrolling;
       ScrollbarStyle: $C.@DefaultScrollbarStyle;
       Padding: (Full: 12);
+
+      // ── Table Selector ───────────────────────────────────────────────────
+      Group {
+        Anchor: (Left: 0, Right: 0, Height: 40);
+        LayoutMode: Left;
+
+        $C.@DropdownBox #TableDropdown {
+          FlexWeight: 1;
+          Anchor: (Top: 0, Bottom: 0);
+        }
+
+        Group { Anchor: (Width: 8); }
+
+        $C.@CancelTextButton #DeleteTableButton {
+          Anchor: (Top: 0, Bottom: 0, Width: 90);
+          Text: "DELETE";
+          Visible: false;
+        }
+      }
+
+      Group { Anchor: (Height: 16); }
+      Group { Anchor: (Height: 2); Background: (Color: #2b3542); }
+      Group { Anchor: (Height: 16); }
 
       // ── Table Name ───────────────────────────────────────────────────────
       Label {
@@ -156,15 +179,15 @@ $C.@DecoratedContainer {
       }
 
       Group { Anchor: (Height: 16); }
-    }  // end scrolling group
+    }
 
     // ── Footer ───────────────────────────────────────────────────────────────
     Group { Anchor: (Height: 2); Background: (Color: #2b3542); }
     Group { Anchor: (Height: 12); }
 
-    $C.@TextButton #CreateButton {
+    $C.@TextButton #SaveTableButton {
       Anchor: (Left: 0, Right: 0, Height: 40);
-      Text: "Create Loot Table";
+      Text: "Save Loot Table";
     }
 
     Group { Anchor: (Height: 4); }

@@ -9,9 +9,8 @@ import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
-import arc.mysteryloot.pages.CreateLootTablePage;
+import arc.mysteryloot.pages.MysteryLootTableEditorPage;
 import arc.mysteryloot.pages.MysteryLootPage;
-import arc.mysteryloot.pages.UpdateLootTablePage;
 
 public class MysteryLootUIManager {
   @Nonnull
@@ -46,7 +45,8 @@ public class MysteryLootUIManager {
     Player player = store.getComponent(ref, Player.getComponentType());
     if (player == null) return;
 
-    var page = new CreateLootTablePage(playerRef);
+    // Open with no table pre-selected → "-- Create New --" mode
+    var page = new MysteryLootTableEditorPage(playerRef, null);
     player.getPageManager().openCustomPage(ref, store, page);
   }
 
@@ -61,7 +61,8 @@ public class MysteryLootUIManager {
     Player player = store.getComponent(ref, Player.getComponentType());
     if (player == null) return;
 
-    var page = new UpdateLootTablePage(playerRef, tableId);
+    // Open with a specific table pre-selected
+    var page = new MysteryLootTableEditorPage(playerRef, tableId);
     player.getPageManager().openCustomPage(ref, store, page);
   }
 }
