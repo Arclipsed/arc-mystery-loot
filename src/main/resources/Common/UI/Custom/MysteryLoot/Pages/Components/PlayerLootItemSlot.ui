@@ -1,0 +1,17 @@
+// Compact item slot used in the player loot page grid
+Group #PlayerLootItemSlotContainer {
+  Anchor: (Width: 64, Height: 64);
+  Background: (Color: #1a2530);
+  Padding: 3;
+
+  ItemSlotButton {
+    Anchor: (Full: 0);
+    Disabled: true;
+
+    ItemSlot #PlayerLootItemSlot {
+      Anchor: (Full: 0);
+      ShowQualityBackground: true;
+      ShowQuantity: true;
+    }
+  }
+}

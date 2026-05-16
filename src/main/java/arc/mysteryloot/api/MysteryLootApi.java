@@ -5,6 +5,10 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+
 import arc.mysteryloot.MysteryLootPlugin;
 import arc.mysteryloot.classes.MysteryLootTable;
 import arc.mysteryloot.classes.MysteryLootTableItem;
@@ -56,5 +60,26 @@ public class MysteryLootApi {
 
   public static boolean DeleteLootTableItem(String tableId, int itemIndex) {
     return MysteryLootPlugin.INSTANCE.Manager.DeleteLootTableItem(tableId, itemIndex);
+  }
+
+  /**
+   * Performs a weighted random roll on the given loot table.
+   * Returns the rolled item, or null if the table doesn't exist or is empty.
+   */
+  @Nullable
+  public static MysteryLootTableItem RollLootTable(String tableId) {
+    return MysteryLootPlugin.INSTANCE.Manager.RollLootTable(tableId);
+  }
+
+  /**
+   * Opens the player-facing loot roll dialog for the given table.
+   * Call this from your own plugin when a player interacts with a loot source.
+   */
+  public static void OpenPlayerLootPage(
+    @Nonnull Ref<EntityStore> ref,
+    @Nonnull Store<EntityStore> store,
+    @Nonnull String tableId
+  ) {
+    MysteryLootPlugin.INSTANCE.Manager.UI.OpenPlayerPage(ref, store, tableId);
   }
 }

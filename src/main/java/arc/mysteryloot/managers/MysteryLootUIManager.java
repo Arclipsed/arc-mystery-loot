@@ -10,6 +10,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 import arc.mysteryloot.pages.MysteryLootPage;
+import arc.mysteryloot.pages.MysteryLootPlayerPage;
 import arc.mysteryloot.pages.MysteryLootSimulatePage;
 import arc.mysteryloot.pages.MysteryLootTableEditorPage;
 
@@ -78,6 +79,21 @@ public class MysteryLootUIManager {
     if (player == null) return;
 
     var page = new MysteryLootSimulatePage(playerRef, initialTableId);
+    player.getPageManager().openCustomPage(ref, store, page);
+  }
+
+  public void OpenPlayerPage(
+    @Nonnull Ref<EntityStore> ref,
+    @Nonnull Store<EntityStore> store,
+    @Nonnull String tableId
+  ) {
+    PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
+    if (playerRef == null || !playerRef.isValid()) return;
+
+    Player player = store.getComponent(ref, Player.getComponentType());
+    if (player == null) return;
+
+    var page = new MysteryLootPlayerPage(playerRef, tableId);
     player.getPageManager().openCustomPage(ref, store, page);
   }
 }
