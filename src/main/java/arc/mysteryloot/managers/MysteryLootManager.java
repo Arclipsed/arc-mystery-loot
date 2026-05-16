@@ -1,5 +1,7 @@
 package arc.mysteryloot.managers;
 
+import java.util.Map;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import com.hypixel.hytale.server.core.util.Config;
@@ -21,6 +23,11 @@ public class MysteryLootManager {
   @Nullable
   public MysteryLootTable GetLootTable(String tableId) {
     return TablesConfig.get().GetRewardPool(tableId);
+  }
+
+  @Nonnull
+  public Map<String, MysteryLootTable> GetAllLootTables() {
+    return TablesConfig.get().RewardPools;
   }
 
   public boolean CreateMysteryLootTable(String tableId) {
@@ -49,6 +56,16 @@ public class MysteryLootManager {
       return false;
     }
     config.SaveRewardPool(tableId, newTable);
+    TablesConfig.save();
+    return true;
+  }
+
+  public boolean RenameMysteryLootTable(String oldId, String newId, MysteryLootTable table) {
+    MysteryLootTablesConfig config = TablesConfig.get();
+    if (!config.RewardPools.containsKey(oldId)) {
+      return false;
+    }
+    config.RenameRewardPool(oldId, newId, table);
     TablesConfig.save();
     return true;
   }
