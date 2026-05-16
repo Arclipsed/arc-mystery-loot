@@ -43,50 +43,70 @@ $C.@PageOverlay {
         }
       }
 
+      // ── Result separator (hidden until rolled) ──────────────────────────
+      Group #ResultSeparator {
+        Anchor: (Left: 0, Right: 0);
+        LayoutMode: Top;
+        Visible: false;
+
+        Group { Anchor: (Height: 12); }
+        Group { Anchor: (Height: 1); Background: (Color: #2b3542); }
+        Group { Anchor: (Height: 12); }
+      }
+
       // ── Result ────────────────────────────────────────────────────────
       Group #ResultPanel {
-        LayoutMode: Left;
-        Anchor: (Left: 0, Right: 0, Height: 80);
+        LayoutMode: Middle;
+        Anchor: (Left: 0, Right: 0, Height: 130);
         Visible: false;
 
         Group {
-          Anchor: (Width: 72, Height: 72, Top: 4);
-          Background: (Color: #1a2530);
-          Padding: 3;
-
-          ItemSlotButton {
-            Anchor: (Full: 0);
-            Disabled: true;
-
-            ItemSlot #ResultItemSlot {
-              Anchor: (Full: 0);
-              ShowQualityBackground: true;
-              ShowQuantity: true;
-            }
-          }
-        }
-
-        Group { Anchor: (Width: 12); }
-
-        Group {
-          FlexWeight: 1;
           LayoutMode: Top;
-          Anchor: (Top: 0, Bottom: 0);
+
+          // Icon centered horizontally
+          Group {
+            LayoutMode: Left;
+
+            Group { FlexWeight: 1; }
+
+            Group {
+              Anchor: (Width: 72, Height: 72);
+              Background: (Color: #1a2530);
+              Padding: 3;
+
+              ItemSlotButton {
+                Anchor: (Full: 0);
+                Disabled: true;
+
+                ItemSlot #ResultItemSlot {
+                  Anchor: (Full: 0);
+                  ShowQualityBackground: true;
+                  ShowQuantity: true;
+                }
+              }
+            }
+
+            Group { FlexWeight: 1; }
+          }
+
+          Group { Anchor: (Height: 8); }
 
           Label #ResultItemNameLabel {
             Style: (
               TextColor: #62ffc0,
               FontSize: 16,
+              HorizontalAlignment: Center,
             );
             Text: "";
           }
 
-          Group { Anchor: (Height: 4); }
+          Group { Anchor: (Height: 3); }
 
           Label #ResultAmountLabel {
             Style: (
               TextColor: #8f9dae,
               FontSize: 13,
+              HorizontalAlignment: Center,
             );
             Text: "";
           }

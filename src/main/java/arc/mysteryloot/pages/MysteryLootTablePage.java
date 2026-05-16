@@ -100,8 +100,10 @@ public class MysteryLootTablePage extends InteractiveCustomUIPage<MysteryLootTab
   }
 
   private void renderResult(UICommandBuilder cmd) {
-    cmd.set("#ResultPanel.Visible", HasRolled && RolledItem != null);
-    if (HasRolled && RolledItem != null) {
+    boolean show = HasRolled && RolledItem != null;
+    cmd.set("#ResultPanel.Visible", show);
+    cmd.set("#ResultSeparator.Visible", show);
+    if (show) {
       cmd.set("#ResultItemSlot.ItemId", RolledItem.ItemId);
       cmd.set("#ResultItemSlot.Quantity", RolledItem.Amount);
       cmd.set("#ResultItemNameLabel.Text", RolledItem.ItemId.replace("_", " "));
