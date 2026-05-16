@@ -16,8 +16,6 @@ public class MysteryLootViewer implements Component<EntityStore> {
 
   public MysteryLootViewer() {}
 
-  // â”€â”€ Component registry â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-
   public static void SetComponentType(ComponentType<EntityStore, MysteryLootViewer> type) {
     TYPE = type;
   }
