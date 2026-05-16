@@ -1,0 +1,82 @@
+$C = "../../Common.ui";
+
+$C.@PageOverlay {
+  LayoutMode: Middle;
+
+  $C.@DecoratedContainer {
+    @CloseButton = true;
+    Anchor: (Width: 320, Height: 320);
+
+    #Title {
+      Label {
+        Style: (
+          ...$C.@TitleStyle,
+          HorizontalAlignment: Center,
+        );
+        Padding: (Horizontal: 19);
+        Text: "You Received";
+      }
+    }
+
+    #Content {
+      FlexWeight: 1;
+      LayoutMode: Top;
+      Padding: (Horizontal: 16, Top: 20, Bottom: 16);
+
+      // ── Item icon (centered) ─────────────────────────────────────────
+      Group {
+        LayoutMode: Left;
+        Anchor: (Left: 0, Right: 0);
+
+        Group { FlexWeight: 1; }
+
+        Group {
+          Anchor: (Width: 120, Height: 120);
+          Background: (Color: #1a2530);
+          Padding: 4;
+
+          ItemSlotButton {
+            Anchor: (Full: 0);
+            Disabled: true;
+
+            ItemSlot #ResultItemSlot {
+              Anchor: (Full: 0);
+              ShowQualityBackground: true;
+              ShowQuantity: true;
+            }
+          }
+        }
+
+        Group { FlexWeight: 1; }
+      }
+
+      Group { Anchor: (Height: 16); }
+
+      // ── Item name ────────────────────────────────────────────────────
+      Label #ResultItemNameLabel {
+        Style: (
+          TextColor: #62ffc0,
+          FontSize: 18,
+          HorizontalAlignment: Center,
+        );
+        Anchor: (Left: 0, Right: 0);
+        Text: "";
+      }
+
+      Group { Anchor: (Height: 6); }
+
+      // ── Amount ───────────────────────────────────────────────────────
+      Label #ResultAmountLabel {
+        Style: (
+          TextColor: #8f9dae,
+          FontSize: 15,
+          HorizontalAlignment: Center,
+        );
+        Anchor: (Left: 0, Right: 0);
+        Text: "";
+      }
+    }
+  }
+}
+
+$C.@BackButton {}

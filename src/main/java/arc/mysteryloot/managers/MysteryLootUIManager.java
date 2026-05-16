@@ -12,6 +12,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import arc.mysteryloot.pages.MysteryLootSimulatePage;
 import arc.mysteryloot.pages.MysteryLootTableEditorPage;
 import arc.mysteryloot.pages.MysteryLootTablePage;
+import arc.mysteryloot.pages.MysteryLootTableResultPage;
 
 public class MysteryLootUIManager {
   @Nonnull
@@ -79,6 +80,22 @@ public class MysteryLootUIManager {
     if (player == null) return;
 
     var page = new MysteryLootTablePage(playerRef, tableId);
+    player.getPageManager().openCustomPage(ref, store, page);
+  }
+
+  public void OpenResultPage(
+    @Nonnull Ref<EntityStore> ref,
+    @Nonnull Store<EntityStore> store,
+    @Nonnull String itemId,
+    int amount
+  ) {
+    PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
+    if (playerRef == null || !playerRef.isValid()) return;
+
+    Player player = store.getComponent(ref, Player.getComponentType());
+    if (player == null) return;
+
+    var page = new MysteryLootTableResultPage(playerRef, itemId, amount);
     player.getPageManager().openCustomPage(ref, store, page);
   }
 }

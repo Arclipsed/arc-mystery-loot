@@ -32,7 +32,6 @@ import arc.mysteryloot.classes.MysteryLootTableItem;
 public class MysteryLootTablePage extends InteractiveCustomUIPage<MysteryLootTablePage.MysteryLootTablePageEventData> {
 
   @Nonnull private final String TableId;
-  @Nullable private MysteryLootTableItem RolledItem;
   private boolean HasRolled = false;
 
   public MysteryLootTablePage(@Nonnull PlayerRef playerRef, @Nonnull String tableId) {
@@ -55,7 +54,6 @@ public class MysteryLootTablePage extends InteractiveCustomUIPage<MysteryLootTab
     cmd.set("#RollButton.Disabled", HasRolled);
 
     renderItems(cmd);
-    renderResult(cmd);
 
     events.addEventBinding(CustomUIEventBindingType.Activating, "#CloseButton", EventData.of("Action", "Close"), false);
     events.addEventBinding(CustomUIEventBindingType.Activating, "#RollButton", EventData.of("Action", "Roll"), false);
@@ -99,17 +97,6 @@ public class MysteryLootTablePage extends InteractiveCustomUIPage<MysteryLootTab
     }
   }
 
-  private void renderResult(UICommandBuilder cmd) {
-    boolean show = HasRolled && RolledItem != null;
-    cmd.set("#ResultPanel.Visible", show);
-    cmd.set("#ResultSeparator.Visible", show);
-    if (show) {
-      cmd.set("#ResultItemSlot.ItemId", RolledItem.ItemId);
-      cmd.set("#ResultItemSlot.Quantity", RolledItem.Amount);
-      cmd.set("#ResultItemNameLabel.Text", RolledItem.ItemId.replace("_", " "));
-      cmd.set("#ResultAmountLabel.Text", "x" + RolledItem.Amount);
-    }
-  }
 
   // ── Events ─────────────────────────────────────────────────────────────────
 
@@ -128,9 +115,11 @@ public class MysteryLootTablePage extends InteractiveCustomUIPage<MysteryLootTab
 
       case "Roll":
         if (HasRolled) break;
-        RolledItem = MysteryLootPlugin.INSTANCE.Manager.RollLootTable(TableId);
+        var rolled = MysteryLootPlugin.INSTANCE.Manager.RollLootTable(TableId);
         HasRolled = true;
-        this.rebuild();
+        if (rolled != null) {
+          MysteryLootPlugin.INSTANCE.Manager.UI.OpenResultPage(ref, store, rolled.ItemId, rolled.Amount);
+        }
         return;
     }
   }
