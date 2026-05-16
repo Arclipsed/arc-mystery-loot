@@ -86,10 +86,10 @@ public class MysteryLootTablePage extends InteractiveCustomUIPage<MysteryLootTab
       // Start a new row every 5 items
       if (i % ITEMS_PER_ROW == 0) {
         rowIndex = i / ITEMS_PER_ROW;
-        cmd.append("#LootItemsContainer", "MysteryLoot/Pages/Components/LootItemRow.ui");
+        cmd.append("#LootItemsContainer", "MysteryLoot/Pages/Components/LootCardRow.ui");
       }
 
-      String rowSel = "#LootItemsContainer[" + rowIndex + "] #LootItemRow";
+      String rowSel = "#LootItemsContainer[" + rowIndex + "]";
       cmd.append(rowSel, "MysteryLoot/Pages/Components/LootItemCard.ui");
 
       String cardSel = rowSel + "[" + (i % ITEMS_PER_ROW) + "]";

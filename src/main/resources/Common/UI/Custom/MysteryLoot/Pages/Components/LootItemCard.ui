@@ -3,7 +3,6 @@
 Group #LootItemCard {
   Anchor: (Width: 100, Height: 100);
   LayoutMode: Top;
-  Padding: (Right: 6, Bottom: 6);
 
   Group {
     Anchor: (Left: 0, Right: 0, Height: 100);

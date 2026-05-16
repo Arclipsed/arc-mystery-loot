@@ -5,7 +5,7 @@ $C.@PageOverlay {
 
   $C.@DecoratedContainer {
     @CloseButton = true;
-    Anchor: (Width: 562, Height: 520);
+    Anchor: (Width: 532, Height: 520);
 
     #Title {
       Label #TableNameLabel {
@@ -21,7 +21,6 @@ $C.@PageOverlay {
     #Content {
       FlexWeight: 1;
       LayoutMode: Top;
-      Padding: (Horizontal: 16, Top: 12, Bottom: 16);
 
       // Scrollable item card row
       Group {
@@ -30,15 +29,19 @@ $C.@PageOverlay {
         LayoutMode: TopScrolling;
         ScrollbarStyle: $C.@DefaultScrollbarStyle;
 
-        Group #LootItemsContainer {
-          LayoutMode: Top;
+        Group {
+          LayoutMode: Left;
           Anchor: (Left: 0, Right: 0);
+
+          Group { FlexWeight: 1; }
+
+          Group #LootItemsContainer {
+            LayoutMode: Top;
+          }
+
+          Group { FlexWeight: 1; }
         }
       }
-
-      Group { Anchor: (Height: 12); }
-      Group { Anchor: (Height: 1); Background: (Color: #2b3542); }
-      Group { Anchor: (Height: 12); }
 
       // ── Result ────────────────────────────────────────────────────────
       Group #ResultPanel {
@@ -90,6 +93,8 @@ $C.@PageOverlay {
         }
       }
 
+      Group { Anchor: (Height: 12); }
+      Group { Anchor: (Height: 2); Background: (Color: #2b3542); }
       Group { Anchor: (Height: 12); }
 
       // ── Roll button ───────────────────────────────────────────────────

@@ -1,0 +1,7 @@
+// Row wrapper for the player loot table page - holds up to 5 LootItemCards horizontally
+// No Left/Right stretch - auto-sizes to card content so it can be centered
+Group #LootCardRow {
+  LayoutMode: Left;
+  Anchor: (Height: 120);
+  Padding: (Bottom: 4);
+}
