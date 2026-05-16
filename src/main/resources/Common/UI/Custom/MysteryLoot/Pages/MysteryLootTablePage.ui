@@ -31,7 +31,7 @@ $C.@PageOverlay {
         ScrollbarStyle: $C.@DefaultScrollbarStyle;
 
         Group #LootItemsContainer {
-          LayoutMode: WrapLeft;
+          LayoutMode: Left;
           Anchor: (Left: 0, Right: 0);
         }
       }
