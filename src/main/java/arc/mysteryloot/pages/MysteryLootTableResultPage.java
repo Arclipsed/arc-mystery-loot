@@ -11,12 +11,15 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
+import com.hypixel.hytale.server.core.asset.type.item.config.Item;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
+import arc.core.components.Msg;
+import arc.core.loggers.Logger;
 import arc.core.managers.SoundManager;
 
 /**
@@ -50,11 +53,18 @@ public class MysteryLootTableResultPage extends InteractiveCustomUIPage<MysteryL
     @Nonnull UIEventBuilder events,
     @Nonnull Store<EntityStore> store
   ) {
+    var item = Item.getAssetMap().getAsset(ItemId);
+    if (item == null) {
+      Logger.Error("MysteryLootTableResultPage - Item not found - " + ItemId);
+      return;
+    }
+
+    var msg = new Msg().Translation(item.getTranslationKey());
     cmd.append("MysteryLoot/Pages/MysteryLootTableResultPage.ui");
 
     cmd.set("#ResultItemSlot.ItemId", ItemId);
     cmd.set("#ResultItemSlot.Quantity", Amount);
-    cmd.set("#ResultItemNameLabel.Text", ItemId.replace("_", " "));
+    cmd.set("#ResultItemNameLabel.Text", msg.Build());
     cmd.set("#ResultAmountLabel.Text", "x" + Amount);
 
     SoundManager.Play2DSoundToPlayer(playerRef, RewardSound, SoundCategory.SFX);
