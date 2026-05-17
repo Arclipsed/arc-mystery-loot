@@ -1,0 +1,33 @@
+
+{
+  "TranslationProperties": {
+    "Name": "Arc.MysteryLoot.Item.Verdant_Key.Name",
+    "Description": "Arc.MysteryLoot.Item.Verdant_Key.Description"
+  },
+  "Icon": "Icons/ItemsGenerated/Verdant_Key.png",
+  "Quality": "Rare",
+  "PlayerAnimationsId": "Item",
+  "IconProperties": {
+    "Scale": 2.5,
+     "Rotation": [
+      17.06,
+      74.435,
+      73.31
+    ],
+    "Translation": [
+      1.3,
+      -7
+    ]
+  },
+  "Tags": {
+    "Type": [
+      "Ingredient"
+    ]
+  },
+  "Texture": "Items/MysteryLoot/Verdant_Key_Texture.png",
+  "Model": "Items/MysteryLoot/Verdant_Key.blockymodel",
+  "UsePlayerAnimations": false,
+  "MaxStack": 1,
+  "DropOnDeath": false
+
+}

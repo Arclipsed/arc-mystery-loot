@@ -1,0 +1,32 @@
+
+{
+  "TranslationProperties": {
+    "Name": "Arc.MysteryLoot.Item.Shadow_Key.Name",
+    "Description": "Arc.MysteryLoot.Item.Shadow_Key.Description"
+  },
+  "Icon": "Icons/ItemsGenerated/Shadow_Key.png",
+  "Quality": "Legendary",
+  "PlayerAnimationsId": "Item",
+  "IconProperties": {
+    "Scale": 2.5,
+    "Rotation": [
+      322,
+      180,
+      0
+    ],
+    "Translation": [
+      -2,
+      -18
+    ]
+  },
+  "Tags": {
+    "Type": [
+      "Ingredient"
+    ]
+  },
+  "Texture": "Items/MysteryLoot/Shadow_Key_Texture.png",
+  "Model": "Items/MysteryLoot/Shadow_Key.blockymodel",
+  "UsePlayerAnimations": false,
+  "MaxStack": 1,
+  "DropOnDeath": false
+}
