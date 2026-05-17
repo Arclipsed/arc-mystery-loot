@@ -17,8 +17,6 @@ import arc.mysteryloot.pages.MysteryLootTableResultPage;
 import arc.mysteryloot.classes.MysteryLootTableItem;
 import arc.mysteryloot.components.LootRollViewer;
 
-import java.util.List;
-
 public class MysteryLootUIManager {
   @Nonnull
   private final MysteryLootManager Manager;
