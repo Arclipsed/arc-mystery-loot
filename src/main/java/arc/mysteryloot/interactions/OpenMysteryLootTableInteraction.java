@@ -16,7 +16,6 @@ import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Sim
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 
 import arc.core.components.Msg;
-import arc.core.loggers.Logger;
 import arc.core.managers.NotificationManger;
 import arc.mysteryloot.MysteryLootPlugin;
 
