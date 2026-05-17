@@ -109,6 +109,12 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
     events.addEventBinding(CustomUIEventBindingType.ValueChanged, "#ItemListDropdown",
       new EventData().append("Action", "SelectItem").append("@SelectedIndex", "#ItemListDropdown.Value"), false);
 
+    // Required key form
+    events.addEventBinding(CustomUIEventBindingType.ValueChanged, "#KeyItemIdInput",
+      new EventData().append("Action", "KeyItemIdChanged").append("@InputText", "#KeyItemIdInput.Value"), false);
+    events.addEventBinding(CustomUIEventBindingType.ValueChanged, "#KeyAmountInput",
+      new EventData().append("Action", "KeyAmountChanged").append("@Amount", "#KeyAmountInput.Value"), false);
+
     // Item form
     events.addEventBinding(CustomUIEventBindingType.ValueChanged, "#ItemIdInput",
       new EventData().append("Action", "ItemIdChanged").append("@InputText", "#ItemIdInput.Value"), false);
@@ -140,6 +146,8 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
 
   private void loadForm(UICommandBuilder cmd) {
     cmd.set("#TableNameInput.Value", EditingTableName);
+    cmd.set("#KeyItemIdInput.Value", EditingTable.RequiredKey.ItemId);
+    cmd.set("#KeyAmountInput.Value", (float) EditingTable.RequiredKey.Amount);
     cmd.set("#ErrorLabel.Visible", false);
     boolean hasChanges = !EditingTableName.equals(SavedTableName) || !EditingTable.Matches(SavedTable);
     cmd.set("#SaveTableButton.Disabled", EditingTableName.isEmpty() || !hasChanges);
@@ -272,6 +280,15 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
         loadForm(saveCmd);
         sendUpdate(saveCmd);
         return;
+
+      // ── Required key ─────────────────────────────────────────────────────
+      case "KeyItemIdChanged":
+        EditingTable.RequiredKey.ItemId = data.InputText != null ? data.InputText.trim() : "";
+        break;
+
+      case "KeyAmountChanged":
+        EditingTable.RequiredKey.Amount = data.Amount != null ? Math.max(1, data.Amount.intValue()) : 1;
+        break;
 
       // ── Table name ───────────────────────────────────────────────────────
       case "NameChanged":

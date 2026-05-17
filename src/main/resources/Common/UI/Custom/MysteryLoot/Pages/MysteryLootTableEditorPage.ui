@@ -73,6 +73,65 @@ $C.@DecoratedContainer {
       Group { Anchor: (Height: 2); Background: (Color: #2b3542); }
       Group { Anchor: (Height: 16); }
 
+      // ── Required Key ──────────────────────────────────────────────────────
+      Label {
+        Text: "Required Key";
+        Style: (TextColor: #8f9dae);
+      }
+
+      Group { Anchor: (Height: 8); }
+
+      Group {
+        Anchor: (Left: 0, Right: 0);
+        LayoutMode: Left;
+
+        Group {
+          FlexWeight: 1;
+          LayoutMode: Top;
+
+          Label {
+            Text: "Item ID (leave empty for none)";
+            Style: (TextColor: #8f9dae);
+          }
+
+          Group { Anchor: (Height: 8); }
+
+          $C.@TextField #KeyItemIdInput {
+            @Anchor = (Height: 40);
+            PlaceholderText: "e.g. Mystery_Box_Key...";
+          }
+        }
+
+        Group { Anchor: (Width: 12); }
+
+        Group {
+          Anchor: (Width: 100);
+          LayoutMode: Top;
+
+          Label {
+            Text: "Amount";
+            Style: (TextColor: #8f9dae);
+          }
+
+          Group { Anchor: (Height: 8); }
+
+          $C.@NumberField #KeyAmountInput {
+            @Anchor = (Height: 40);
+            Format: (
+              MaxDecimalPlaces: 0,
+              Step: 1,
+              MinValue: 1,
+              MaxValue: 999
+            );
+            Value: 1;
+          }
+        }
+      }
+
+      Group { Anchor: (Height: 16); }
+      Group { Anchor: (Height: 2); Background: (Color: #2b3542); }
+      Group { Anchor: (Height: 16); }
+
       // ── Item List ────────────────────────────────────────────────────────
       Label {
         Text: "Loot Items";

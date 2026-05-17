@@ -34,6 +34,8 @@ public class MysteryLootTable {
 
   public boolean Matches(MysteryLootTable other) {
     if (other == null) return false;
+    if (!this.RequiredKey.ItemId.equals(other.RequiredKey.ItemId)) return false;
+    if (this.RequiredKey.Amount != other.RequiredKey.Amount) return false;
     if (this.Items.size() != other.Items.size()) return false;
     for (int i = 0; i < this.Items.size(); i++) {
       if (!this.Items.get(i).Matches(other.Items.get(i))) return false;
