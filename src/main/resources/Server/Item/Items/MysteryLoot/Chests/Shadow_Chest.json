@@ -1,0 +1,96 @@
+{
+  "TranslationProperties": {
+    "Name": "Arc.MysteryLoot.Item.Shadow_Chest.Name",
+    "Description": "Arc.MysteryLoot.Item.Shadow_Chest.Description"
+  },
+  "PlayerAnimationsId": "Block",
+  "Categories": [
+    "Furniture.Containers"
+  ],
+  "Set": "Furniture_Adventure",
+  "Icon": "Icons/ItemsGenerated/Shadow_Chest.png",
+  "BlockType": {
+    "BlockParticleSetId": "Wood",
+    "BlockSoundSetId": "Wood",
+    "CustomModel": "Items/MysteryLoot/Chests/Shadow_Chest.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Items/MysteryLoot/Chests/Shadow_Chest_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "DrawType": "Model",
+    "Flags": {
+      "IsUsable": true
+    },
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Woods"
+      }
+    },
+    "HitboxType": "Full",
+    "Material": "Solid",
+    "Opacity": "Transparent",
+    "ParticleColor": "#9b5de5",
+    "Particles": [
+      {
+        "SystemId": "void_dragon_effects",
+        "Scale": 1.0,
+        "PositionOffset": {
+          "Y": 0.4
+        }
+      }
+    ],
+    "ConnectedBlockRuleSet": {
+      "Type": "CustomTemplate",
+      "TemplateShapeAssetId": "ChestConnectedBlockTemplate",
+      "TemplateShapeBlockPatterns": {
+        "Default": "shadow_chest",
+        "Double": "shadow_chest"
+      }
+    },
+    "State": {
+      "Definitions": {
+        "CloseWindow": {
+          "InteractionSoundEventId": "SFX_Chest_Wooden_Close",
+          "CustomModelAnimation": "Blocks/Animations/Chest/Chest_Close.blockyanim"
+        },
+        "OpenWindow": {
+          "InteractionSoundEventId": "SFX_Chest_Wooden_Open",
+          "CustomModelAnimation": "Blocks/Animations/Chest/Chest_Open.blockyanim"
+        }
+      }
+    },
+    "Supporting": {
+      "Up": [
+        {
+          "FaceType": "Full"
+        }
+      ]
+    },
+    "Support": {
+      "Down": [
+        {
+          "FaceType": "Full"
+        }
+      ]
+    },
+    "VariantRotation": "NESW",
+    "Interactions": {
+      "Use": "Open_Container"
+    }
+  },
+  "Tags": {
+    "Type": [
+      "Furniture"
+    ],
+    "Family": [
+      "LootBox"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Wood",
+  "ItemLevel": 18,
+  "MaxStack": 1
+}
+
+
