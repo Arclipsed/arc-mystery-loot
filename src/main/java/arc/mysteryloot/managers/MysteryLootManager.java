@@ -165,21 +165,30 @@ public class MysteryLootManager {
     var giveItem = new GiveItemInteraction(item.ItemId, item.Amount);
     giveItem.run(store, ref, playerRef);
 
-    var index= Item.getAssetMap().getAsset(item.ItemId).getQualityIndex();
-    var quality = ItemQuality.getAssetMap().getAsset(index);
-    quality.getTextColor();
-    
+    // Resolve item quality color for the announcement
+    String qualityColor = "#62ffc0"; // fallback
+    try {
+      var asset = Item.getAssetMap().getAsset(item.ItemId);
+      if (asset != null) {
+        var quality = ItemQuality.getAssetMap().getAsset(asset.getQualityIndex());
+        if (quality != null) {
+          var c = quality.getTextColor();
+          qualityColor = String.format("#%02x%02x%02x", c.red & 0xFF, c.green & 0xFF, c.blue & 0xFF);
+        }
+      }
+    } catch (Exception ignored) {}
+
     if (item.AnnounceWin) {
       String tableName = tableId.replace("_", " ");
+      String itemName = item.ItemId.replace("_", " ");
       Msg msg = new Msg().Raw("");
-      msg.Append(new Msg().Raw("[" + tableName + "] ").Color("#d51d6aff").Bold());
-      msg.Append(new Msg().Raw(" Player ").Color("#aaaaaa"));
+      msg.Append(new Msg().Raw("[" + tableName + "] ").Color("#d51d6a").Bold());
       msg.Append(new Msg().Raw(playerRef.getUsername()).Color("#ffffff").Bold());
       msg.Append(new Msg().Raw(" won ").Color("#aaaaaa"));
-      msg.Append(new Msg().Raw(item.ItemId.replace("_", " ")).Color(quality.getTextColor().toString()).Bold());
       if (item.Amount > 1) {
-        msg.Append(new Msg().Raw(" x" + item.Amount).Color("#aaaaaa"));
+        msg.Append(new Msg().Raw(item.Amount + " ").Color("#fcdf99").Bold());
       }
+      msg.Append(new Msg().Raw(itemName).Color(qualityColor).Bold());
       msg.Append(new Msg().Raw("!").Color("#aaaaaa"));
       Universe.get().sendMessage(msg.Build());
     }
