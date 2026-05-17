@@ -7,6 +7,8 @@ import javax.annotation.Nullable;
 import com.hypixel.hytale.builtin.adventure.shop.GiveItemInteraction;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.server.core.asset.type.item.config.Item;
+import com.hypixel.hytale.server.core.asset.type.item.config.ItemQuality;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
@@ -139,18 +141,19 @@ public class MysteryLootManager {
   ) {
     MysteryLootTableItem rolled = RollLootTable(tableId);
     if (rolled == null) return null;
-    GiveMysteryItem(ref, store, playerRef, rolled);
+    GiveMysteryItem(ref,playerRef, store, tableId, rolled);
     return rolled;
   }
 
   /**
    * Gives a mystery loot item to the player and broadcasts a win announcement
-   * if AnnounceWin is configured on the item.
+   * if AnnounceWin is configured on the item. The tableId is used as the badge label.
    */
   public void GiveMysteryItem(
     @Nonnull Ref<EntityStore> ref,
-    @Nonnull Store<EntityStore> store,
     @Nonnull PlayerRef playerRef,
+    @Nonnull Store<EntityStore> store,
+    @Nonnull String tableId,
     @Nonnull MysteryLootTableItem item
   ) {
     Player player = store.getComponent(ref, Player.getComponentType());
@@ -162,12 +165,18 @@ public class MysteryLootManager {
     var giveItem = new GiveItemInteraction(item.ItemId, item.Amount);
     giveItem.run(store, ref, playerRef);
 
+    var index= Item.getAssetMap().getAsset(item.ItemId).getQualityIndex();
+    var quality = ItemQuality.getAssetMap().getAsset(index);
+    quality.getTextColor();
+    
     if (item.AnnounceWin) {
+      String tableName = tableId.replace("_", " ");
       Msg msg = new Msg().Raw("");
-      msg.Append(new Msg().Raw("[Mystery Loot] ").Color("#FFD700").Bold());
+      msg.Append(new Msg().Raw("[" + tableName + "] ").Color("#d51d6aff").Bold());
+      msg.Append(new Msg().Raw(" Player ").Color("#aaaaaa"));
       msg.Append(new Msg().Raw(playerRef.getUsername()).Color("#ffffff").Bold());
       msg.Append(new Msg().Raw(" won ").Color("#aaaaaa"));
-      msg.Append(new Msg().Raw(item.ItemId.replace("_", " ")).Color("#62ffc0").Bold());
+      msg.Append(new Msg().Raw(item.ItemId.replace("_", " ")).Color(quality.getTextColor().toString()).Bold());
       if (item.Amount > 1) {
         msg.Append(new Msg().Raw(" x" + item.Amount).Color("#aaaaaa"));
       }

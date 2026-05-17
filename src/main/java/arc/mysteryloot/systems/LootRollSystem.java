@@ -8,7 +8,6 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 import arc.mysteryloot.MysteryLootPlugin;
@@ -68,7 +67,7 @@ public class LootRollSystem extends EntityTickingSystem<EntityStore> {
         : null;
 
       if (item != null) {
-        MysteryLootPlugin.INSTANCE.Manager.GiveMysteryItem(ref, commandBuffer.getStore(), playerRef, item);
+        MysteryLootPlugin.INSTANCE.Manager.GiveMysteryItem(ref, playerRef, commandBuffer.getStore(), viewer.TableId, item);
       }
 
       // Open result page — this replaces the animation page automatically
