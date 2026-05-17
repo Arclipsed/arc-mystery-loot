@@ -49,7 +49,7 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
   private int ItemFormAmount = 1;
   private double ItemFormDropWeight = 1.0;
   private boolean ItemFormAnnounceWin = false;
-  private boolean ItemFormPlaySound = false;
+  @Nonnull private String ItemFormRewardSound = "SFX_Mystery_Loot_Reward_T1";
   // -1 = create new item, >= 0 = editing existing item at index
   private int EditingItemIndex = -1;
 
@@ -125,8 +125,8 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
       new EventData().append("Action", "ItemDropChanceChanged").append("@Amount", "#ItemDropChanceInput.Value"), false);
     events.addEventBinding(CustomUIEventBindingType.ValueChanged, "#AnnounceWinRow #CheckBox",
       new EventData().append("Action", "AnnounceWinChanged").append("@Value", "#AnnounceWinRow #CheckBox.Value"), false);
-    events.addEventBinding(CustomUIEventBindingType.ValueChanged, "#PlaySoundRow #CheckBox",
-      new EventData().append("Action", "PlaySoundChanged").append("@Value2", "#PlaySoundRow #CheckBox.Value"), false);
+    events.addEventBinding(CustomUIEventBindingType.ValueChanged, "#RewardSoundDropdown",
+      new EventData().append("Action", "RewardSoundChanged").append("@SelectedSound", "#RewardSoundDropdown.Value"), false);
 
     // Item actions
     events.addEventBinding(CustomUIEventBindingType.Activating, "#AddItemButton", EventData.of("Action", "AddItem"), false);
@@ -178,7 +178,7 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
     cmd.set("#ItemAmountInput.Value", (float) ItemFormAmount);
     cmd.set("#ItemDropChanceInput.Value", (float) ItemFormDropWeight);
     cmd.set("#AnnounceWinRow #CheckBox.Value", ItemFormAnnounceWin);
-    cmd.set("#PlaySoundRow #CheckBox.Value", ItemFormPlaySound);
+    populateRewardSoundDropdown(cmd);
     cmd.set("#AddItemButton.Disabled", ItemFormId.isEmpty());
     cmd.set("#AddItemButton.Text", EditingItemIndex >= 0 ? "Update Item" : "Add Item to Table");
   }
@@ -188,8 +188,19 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
     ItemFormAmount = 1;
     ItemFormDropWeight = 1.0;
     ItemFormAnnounceWin = false;
-    ItemFormPlaySound = false;
+    ItemFormRewardSound = "SFX_Mystery_Loot_Reward_T1";
     EditingItemIndex = -1;
+  }
+
+  private static final List<DropdownEntryInfo> REWARD_SOUND_ENTRIES = List.of(
+    new DropdownEntryInfo(LocalizableString.fromString("T1 — Common"),    "SFX_Mystery_Loot_Reward_T1"),
+    new DropdownEntryInfo(LocalizableString.fromString("T2 — Rare"),      "SFX_Mystery_Loot_Reward_T2"),
+    new DropdownEntryInfo(LocalizableString.fromString("T3 — Legendary"), "SFX_Mystery_Loot_Reward_T3")
+  );
+
+  private void populateRewardSoundDropdown(UICommandBuilder cmd) {
+    cmd.set("#RewardSoundDropdown.Entries", REWARD_SOUND_ENTRIES);
+    cmd.set("#RewardSoundDropdown.Value", ItemFormRewardSound);
   }
 
   // ── Events ─────────────────────────────────────────────────────────────────
@@ -312,7 +323,7 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
           ItemFormAmount = sel.Amount;
           ItemFormDropWeight = sel.DropWeight;
           ItemFormAnnounceWin = sel.AnnounceWin;
-          ItemFormPlaySound = sel.PlaySound;
+          ItemFormRewardSound = sel.RewardSound != null ? sel.RewardSound : "";
         } else {
           resetItemForm();
         }
@@ -340,8 +351,8 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
         ItemFormAnnounceWin = data.Value != null && data.Value;
         break;
 
-      case "PlaySoundChanged":
-        ItemFormPlaySound = data.Value2 != null && data.Value2;
+      case "RewardSoundChanged":
+        ItemFormRewardSound = data.SelectedSound != null ? data.SelectedSound : "";
         break;
 
       case "AddItem":
@@ -351,7 +362,7 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
         newItem.Amount = ItemFormAmount;
         newItem.DropWeight = ItemFormDropWeight;
         newItem.AnnounceWin = ItemFormAnnounceWin;
-        newItem.PlaySound = ItemFormPlaySound;
+        newItem.RewardSound = ItemFormRewardSound;
         if (EditingItemIndex >= 0 && EditingItemIndex < EditingTable.Items.size()) {
           // Updating existing — stay on the same item
           EditingTable.Items.set(EditingItemIndex, newItem);
@@ -389,7 +400,7 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
     @Nullable public String SelectedIndex;
     @Nullable public Float Amount;
     @Nullable public Boolean Value;
-    @Nullable public Boolean Value2;
+    @Nullable public String SelectedSound;
 
     public MysteryLootTableEditorPageEventData() {}
 
@@ -402,7 +413,7 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
       .append(new KeyedCodec<>("@SelectedIndex", Codec.STRING), (d, v) -> d.SelectedIndex = v, d -> d.SelectedIndex).add()
       .append(new KeyedCodec<>("@Amount", Codec.FLOAT), (d, v) -> d.Amount = v, d -> d.Amount).add()
       .append(new KeyedCodec<>("@Value", Codec.BOOLEAN), (d, v) -> d.Value = v, d -> d.Value).add()
-      .append(new KeyedCodec<>("@Value2", Codec.BOOLEAN), (d, v) -> d.Value2 = v, d -> d.Value2).add()
+      .append(new KeyedCodec<>("@SelectedSound", Codec.STRING), (d, v) -> d.SelectedSound = v, d -> d.SelectedSound).add()
       .build();
   }
 }

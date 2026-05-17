@@ -238,11 +238,16 @@ $C.@DecoratedContainer {
         @Checked = false;
       }
 
+      // ── Reward Sound ──────────────────────────────────────────────────────
+      Label {
+        Text: "Reward Sound";
+        Style: (TextColor: #8f9dae);
+      }
+
       Group { Anchor: (Height: 8); }
 
-      $C.@CheckBoxWithLabel #PlaySoundRow {
-        @Text = "Play special reward sound";
-        @Checked = false;
+      $C.@DropdownBox #RewardSoundDropdown {
+        Anchor: (Left: 0, Right: 0, Height: 40);
       }
 
       Group { Anchor: (Height: 12); }

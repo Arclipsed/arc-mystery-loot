@@ -27,18 +27,18 @@ public class MysteryLootTableResultPage extends InteractiveCustomUIPage<MysteryL
 
   @Nonnull private final String ItemId;
   private final int Amount;
-  private final boolean PlaySound;
+  @Nonnull private final String RewardSound;
 
   public MysteryLootTableResultPage(
     @Nonnull PlayerRef playerRef,
     @Nonnull String itemId,
     int amount,
-    boolean playSound
+    @Nonnull String rewardSound
   ) {
     super(playerRef, CustomPageLifetime.CanDismiss, ResultPageEventData.CODEC);
     this.ItemId = itemId;
     this.Amount = amount;
-    this.PlaySound = playSound;
+    this.RewardSound = rewardSound;
   }
 
   // ── Build ──────────────────────────────────────────────────────────────────
@@ -57,10 +57,7 @@ public class MysteryLootTableResultPage extends InteractiveCustomUIPage<MysteryL
     cmd.set("#ResultItemNameLabel.Text", ItemId.replace("_", " "));
     cmd.set("#ResultAmountLabel.Text", "x" + Amount);
 
-    if (PlaySound == true) {
-      SoundManager.Play2DSoundToPlayer(playerRef, "SFX_Mystery_Loot_Reward_1", SoundCategory.SFX);
-    }
-   
+    SoundManager.Play2DSoundToPlayer(playerRef, RewardSound, SoundCategory.SFX);
     events.addEventBinding(CustomUIEventBindingType.Activating, "#CloseButton", com.hypixel.hytale.server.core.ui.builder.EventData.of("Action", "Close"), false);
   }
 

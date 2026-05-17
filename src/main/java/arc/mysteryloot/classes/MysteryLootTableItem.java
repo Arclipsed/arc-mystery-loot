@@ -8,13 +8,12 @@ import com.hypixel.hytale.codec.builder.BuilderCodec;
 
 public class MysteryLootTableItem {
   @Nonnull
-  public String ItemId = "";
+  public String ItemId = "Plant_Fruit_Berries_Red";
   public double DropWeight = 1.0;
   public int Amount = 1;
-  /** If true, broadcasts a server-wide message when this item is won. */
   public boolean AnnounceWin = false;
-  /** If true, plays the special reward sound (SFX_Mystery_Loot_Reward_2) when this item is won. */
-  public boolean PlaySound = false;
+  @Nonnull
+  public String RewardSound = "SFX_Mystery_Loot_Reward_T1";
 
   public MysteryLootTableItem() {}
   
@@ -31,7 +30,7 @@ public class MysteryLootTableItem {
       this.DropWeight = other.DropWeight;
       this.Amount = other.Amount;
       this.AnnounceWin = other.AnnounceWin;
-      this.PlaySound = other.PlaySound;
+      this.RewardSound = other.RewardSound != null && !other.RewardSound.isEmpty() ? other.RewardSound : "SFX_Mystery_Loot_Reward_T1";
     }
   }
 
@@ -41,7 +40,7 @@ public class MysteryLootTableItem {
       && this.DropWeight == other.DropWeight
       && this.Amount == other.Amount
       && this.AnnounceWin == other.AnnounceWin
-      && this.PlaySound == other.PlaySound;
+      && java.util.Objects.equals(this.RewardSound, other.RewardSound);
   }
 
   @Nonnull
@@ -72,9 +71,9 @@ public class MysteryLootTableItem {
     )
     .add()
     .append(
-      new KeyedCodec<>("PlaySound", Codec.BOOLEAN),
-      (config, value) -> config.PlaySound = value != null && value,
-      config -> config.PlaySound
+      new KeyedCodec<>("RewardSound", Codec.STRING),
+      (config, value) -> config.RewardSound = value != null ? value : "",
+      config -> config.RewardSound
     )
     .add()
     .build();

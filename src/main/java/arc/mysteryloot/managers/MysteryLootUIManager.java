@@ -91,7 +91,7 @@ public class MysteryLootUIManager {
     @Nonnull Store<EntityStore> store,
     @Nonnull String itemId,
     int amount,
-    boolean playSound
+    @Nonnull String rewardSound
   ) {
     PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
     if (playerRef == null || !playerRef.isValid()) return;
@@ -99,7 +99,7 @@ public class MysteryLootUIManager {
     Player player = store.getComponent(ref, Player.getComponentType());
     if (player == null) return;
 
-    var page = new MysteryLootTableResultPage(playerRef, itemId, amount, playSound);
+    var page = new MysteryLootTableResultPage(playerRef, itemId, amount, rewardSound);
     player.getPageManager().openCustomPage(ref, store, page);
   }
 

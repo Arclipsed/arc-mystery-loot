@@ -73,7 +73,7 @@ public class LootRollSystem extends EntityTickingSystem<EntityStore> {
 
       // Open result page — this replaces the animation page automatically
       MysteryLootPlugin.INSTANCE.Manager.UI.OpenResultPage(
-        ref, commandBuffer.getStore(), viewer.ItemId, viewer.Amount, item.PlaySound
+        ref, commandBuffer.getStore(), viewer.ItemId, viewer.Amount, item.RewardSound
       );
     }
   }
