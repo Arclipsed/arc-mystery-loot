@@ -60,15 +60,16 @@ public class LootRollSystem extends EntityTickingSystem<EntityStore> {
     if (viewer.AccumulatedTime >= viewer.TotalTime) {
       commandBuffer.removeComponent(ref, viewerType);
 
-      // Give the item — announcement is handled inside GiveMysteryItem if configured
       var table = MysteryLootPlugin.INSTANCE.Manager.GetLootTable(viewer.TableId);
-      var item = table != null
-        ? table.Items.stream().filter(i -> i.ItemId.equals(viewer.ItemId)).findFirst().orElse(null)
-        : null;
+      if (table == null) return;
 
-      if (item != null) {
-        MysteryLootPlugin.INSTANCE.Manager.GiveMysteryItem(ref, playerRef, commandBuffer.getStore(), viewer.TableId, item);
-      }
+      var item = table.Items.stream()
+          .filter(i -> i.ItemId.equals(viewer.ItemId))
+          .findFirst()
+          .orElse(null);
+      if (item == null) return;
+
+      MysteryLootPlugin.INSTANCE.Manager.GiveMysteryItem(ref, playerRef, commandBuffer.getStore(), viewer.TableId, item);
 
       // Open result page — this replaces the animation page automatically
       MysteryLootPlugin.INSTANCE.Manager.UI.OpenResultPage(

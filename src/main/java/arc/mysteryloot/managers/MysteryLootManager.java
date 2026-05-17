@@ -16,6 +16,7 @@ import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
 import arc.core.components.Msg;
+import arc.core.loggers.Logger;
 import arc.mysteryloot.classes.MysteryLootTable;
 import arc.mysteryloot.classes.MysteryLootTableItem;
 import arc.mysteryloot.configs.MysteryLootTablesConfig;
@@ -129,23 +130,6 @@ public class MysteryLootManager {
   }
 
   /**
-   * Rolls the loot table and gives the resulting item to the player.
-   * Returns the rolled item, or null if the table is empty or doesn't exist.
-   */
-  @Nullable
-  public MysteryLootTableItem RollAndGiveLootTable(
-    @Nonnull String tableId,
-    @Nonnull Ref<EntityStore> ref,
-    @Nonnull Store<EntityStore> store,
-    @Nonnull PlayerRef playerRef
-  ) {
-    MysteryLootTableItem rolled = RollLootTable(tableId);
-    if (rolled == null) return null;
-    GiveMysteryItem(ref,playerRef, store, tableId, rolled);
-    return rolled;
-  }
-
-  /**
    * Gives a mystery loot item to the player and broadcasts a win announcement
    * if AnnounceWin is configured on the item. The tableId is used as the badge label.
    */
@@ -159,38 +143,42 @@ public class MysteryLootManager {
     Player player = store.getComponent(ref, Player.getComponentType());
     if (player == null) return;
 
+    var asset = Item.getAssetMap().getAsset(item.ItemId);
+    if (asset == null) {
+      Logger.Error("MysteryLootManager - GiveMysteryItem - Could not find Item Asset" + item.ItemId);
+      return;
+    }
+
     var itemStack = new ItemStack(item.ItemId, item.Amount);
     player.notifyPickupItem(ref, itemStack, null, store);
 
     var giveItem = new GiveItemInteraction(item.ItemId, item.Amount);
     giveItem.run(store, ref, playerRef);
 
-    // Resolve item quality color for the announcement
-    String qualityColor = "#62ffc0"; // fallback
-    try {
-      var asset = Item.getAssetMap().getAsset(item.ItemId);
-      if (asset != null) {
-        var quality = ItemQuality.getAssetMap().getAsset(asset.getQualityIndex());
-        if (quality != null) {
-          var c = quality.getTextColor();
-          qualityColor = String.format("#%02x%02x%02x", c.red & 0xFF, c.green & 0xFF, c.blue & 0xFF);
-        }
-      }
-    } catch (Exception ignored) {}
-
-    if (item.AnnounceWin) {
-      String tableName = tableId.replace("_", " ");
-      String itemName = item.ItemId.replace("_", " ");
-      Msg msg = new Msg().Raw("");
-      msg.Append(new Msg().Raw("[" + tableName + "] ").Color("#d51d6a").Bold());
-      msg.Append(new Msg().Raw(playerRef.getUsername()).Color("#ffffff").Bold());
-      msg.Append(new Msg().Raw(" won ").Color("#aaaaaa"));
-      if (item.Amount > 1) {
-        msg.Append(new Msg().Raw(item.Amount + " ").Color("#fcdf99").Bold());
-      }
-      msg.Append(new Msg().Raw(itemName).Color(qualityColor).Bold());
-      msg.Append(new Msg().Raw("!").Color("#aaaaaa"));
-      Universe.get().sendMessage(msg.Build());
+    var quality = ItemQuality.getAssetMap().getAsset(asset.getQualityIndex());
+    if (quality == null) {
+      Logger.Error("MysteryLootManager - GiveMysteryItem - Could not find ItemQuality Asset" + asset.getQualityIndex());
+      return;
     }
+    
+    if (item.AnnounceWin == false) {
+      return;
+    }
+
+    var itemColor = quality.getTextColor();
+    var itemHexColor = String.format("#%02x%02x%02x", itemColor.red & 0xFF, itemColor.green & 0xFF, itemColor.blue & 0xFF);
+
+    String tableName = tableId.replace("_", " ");
+    String itemName = item.ItemId.replace("_", " ");
+    Msg msg = new Msg().Raw("");
+    msg.Append(new Msg().Raw("[" + tableName + "] ").Color("#d51d6a").Bold());
+    msg.Append(new Msg().Raw(playerRef.getUsername()).Color("#ffffff").Bold());
+    msg.Append(new Msg().Raw(" won ").Color("#aaaaaa"));
+    if (item.Amount > 1) {
+      msg.Append(new Msg().Raw(item.Amount + " ").Color("#fcdf99").Bold());
+    }
+    msg.Append(new Msg().Raw(itemName).Color(itemHexColor).Bold());
+    msg.Append(new Msg().Raw("!").Color("#aaaaaa"));
+    Universe.get().sendMessage(msg.Build());
   }
 }

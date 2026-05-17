@@ -103,6 +103,7 @@ public class MysteryLootUIManager {
     var page = new MysteryLootTableResultPage(playerRef, itemId, amount);
     player.getPageManager().openCustomPage(ref, store, page);
   }
+
   public void OpenRollAnimationPage(
     @Nonnull Ref<EntityStore> ref,
     @Nonnull Store<EntityStore> store,
