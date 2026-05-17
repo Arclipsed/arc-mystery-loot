@@ -11,6 +11,7 @@ public class MysteryLootTableItem {
   public String ItemId = "";
   public double DropWeight = 1.0;
   public int Amount = 1;
+  public boolean AnnounceWin = false;
 
   public MysteryLootTableItem() {}
   
@@ -18,6 +19,7 @@ public class MysteryLootTableItem {
     this.ItemId = itemId;
     this.DropWeight = dropWeight;
     this.Amount = amount;
+    this.AnnounceWin = false;
   }
   
   public MysteryLootTableItem(MysteryLootTableItem other) {
@@ -25,6 +27,7 @@ public class MysteryLootTableItem {
       this.ItemId = other.ItemId;
       this.DropWeight = other.DropWeight;
       this.Amount = other.Amount;
+      this.AnnounceWin = other.AnnounceWin;
     }
   }
 
@@ -32,7 +35,8 @@ public class MysteryLootTableItem {
     if (other == null) return false;
     return java.util.Objects.equals(this.ItemId, other.ItemId)
       && this.DropWeight == other.DropWeight
-      && this.Amount == other.Amount;
+      && this.Amount == other.Amount
+      && this.AnnounceWin == other.AnnounceWin;
   }
 
   @Nonnull
@@ -54,6 +58,12 @@ public class MysteryLootTableItem {
       new KeyedCodec<>("Amount", Codec.INTEGER),
       (config, value) -> config.Amount = value,
       config -> config.Amount
+    )
+    .add()
+    .append(
+      new KeyedCodec<>("AnnounceWin", Codec.BOOLEAN),
+      (config, value) -> config.AnnounceWin = value != null && value,
+      config -> config.AnnounceWin
     )
     .add()
     .build();

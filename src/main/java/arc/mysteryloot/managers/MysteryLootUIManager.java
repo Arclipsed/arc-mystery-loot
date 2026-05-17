@@ -106,7 +106,7 @@ public class MysteryLootUIManager {
   public void OpenRollAnimationPage(
     @Nonnull Ref<EntityStore> ref,
     @Nonnull Store<EntityStore> store,
-    @Nonnull List<MysteryLootTableItem> tableItems,
+    @Nonnull String tableId,
     @Nonnull String realItemId,
     int realAmount
   ) {
@@ -118,12 +118,15 @@ public class MysteryLootUIManager {
 
     // Attach the LootRollViewer component so LootRollSystem can drive the animation
     var viewer = new LootRollViewer();
+    viewer.TableId = tableId;
     viewer.ItemId = realItemId;
     viewer.Amount = realAmount;
     store.addComponent(ref, LootRollViewer.GetComponentType(), viewer);
 
-    // Open the animation page
-    var page = new MysteryLootRollAnimationPage(playerRef, tableItems, realItemId);
+    // Page looks up the table items itself
+    var table = Manager.GetLootTable(tableId);
+    var items = table != null ? table.Items : new java.util.ArrayList<MysteryLootTableItem>();
+    var page = new MysteryLootRollAnimationPage(playerRef, items, realItemId);
     player.getPageManager().openCustomPage(ref, store, page);
   }
 }

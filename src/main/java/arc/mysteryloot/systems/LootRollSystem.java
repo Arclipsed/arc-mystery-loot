@@ -7,9 +7,8 @@ import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
-import com.hypixel.hytale.protocol.packets.interface_.Page;
-import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 import arc.mysteryloot.MysteryLootPlugin;
@@ -62,10 +61,15 @@ public class LootRollSystem extends EntityTickingSystem<EntityStore> {
     if (viewer.AccumulatedTime >= viewer.TotalTime) {
       commandBuffer.removeComponent(ref, viewerType);
 
-      // Give the item now that the animation is complete
-      MysteryLootPlugin.INSTANCE.Manager.GiveItem(
-        ref, commandBuffer.getStore(), playerRef, viewer.ItemId, viewer.Amount
-      );
+      // Give the item — announcement is handled inside GiveMysteryItem if configured
+      var table = MysteryLootPlugin.INSTANCE.Manager.GetLootTable(viewer.TableId);
+      var item = table != null
+        ? table.Items.stream().filter(i -> i.ItemId.equals(viewer.ItemId)).findFirst().orElse(null)
+        : null;
+
+      if (item != null) {
+        MysteryLootPlugin.INSTANCE.Manager.GiveMysteryItem(ref, commandBuffer.getStore(), playerRef, item);
+      }
 
       // Open result page — this replaces the animation page automatically
       MysteryLootPlugin.INSTANCE.Manager.UI.OpenResultPage(

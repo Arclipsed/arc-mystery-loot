@@ -171,8 +171,7 @@ public class MysteryLootTablePage extends InteractiveCustomUIPage<MysteryLootTab
         var rolled = MysteryLootPlugin.INSTANCE.Manager.RollLootTable(TableId);
         HasRolled = true;
         if (rolled != null) {
-          var items = table.Items;
-          MysteryLootPlugin.INSTANCE.Manager.UI.OpenRollAnimationPage(ref, store, items, rolled.ItemId, rolled.Amount);
+          MysteryLootPlugin.INSTANCE.Manager.UI.OpenRollAnimationPage(ref, store, TableId, rolled.ItemId, rolled.Amount);
         }
         return;
     }

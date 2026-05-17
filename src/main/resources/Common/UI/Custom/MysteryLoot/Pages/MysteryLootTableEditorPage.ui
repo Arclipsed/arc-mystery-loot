@@ -173,6 +173,14 @@ $C.@DecoratedContainer {
 
       Group { Anchor: (Height: 12); }
 
+      // ── Announce Win ──────────────────────────────────────────────────────
+      $C.@CheckBoxWithLabel #AnnounceWinRow {
+        @Text = "Announce win in chat";
+        @Checked = false;
+      }
+
+      Group { Anchor: (Height: 12); }
+
       $C.@SecondaryTextButton #AddItemButton {
         Anchor: (Left: 0, Right: 0, Height: 40);
         Text: "Add Item to Table";

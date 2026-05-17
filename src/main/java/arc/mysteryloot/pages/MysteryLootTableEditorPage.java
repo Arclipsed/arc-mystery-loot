@@ -48,6 +48,7 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
   @Nonnull private String ItemFormId = "";
   private int ItemFormAmount = 1;
   private double ItemFormDropWeight = 1.0;
+  private boolean ItemFormAnnounceWin = false;
   // -1 = create new item, >= 0 = editing existing item at index
   private int EditingItemIndex = -1;
 
@@ -115,6 +116,8 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
       new EventData().append("Action", "ItemAmountChanged").append("@Amount", "#ItemAmountInput.Value"), false);
     events.addEventBinding(CustomUIEventBindingType.ValueChanged, "#ItemDropChanceInput",
       new EventData().append("Action", "ItemDropChanceChanged").append("@Amount", "#ItemDropChanceInput.Value"), false);
+    events.addEventBinding(CustomUIEventBindingType.ValueChanged, "#AnnounceWinRow #CheckBox",
+      new EventData().append("Action", "AnnounceWinChanged").append("@Value", "#AnnounceWinRow #CheckBox.Value"), false);
 
     // Item actions
     events.addEventBinding(CustomUIEventBindingType.Activating, "#AddItemButton", EventData.of("Action", "AddItem"), false);
@@ -163,6 +166,7 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
     cmd.set("#ItemIdInput.Value", ItemFormId);
     cmd.set("#ItemAmountInput.Value", (float) ItemFormAmount);
     cmd.set("#ItemDropChanceInput.Value", (float) ItemFormDropWeight);
+    cmd.set("#AnnounceWinRow #CheckBox.Value", ItemFormAnnounceWin);
     cmd.set("#AddItemButton.Disabled", ItemFormId.isEmpty());
     cmd.set("#AddItemButton.Text", EditingItemIndex >= 0 ? "Update Item" : "Add Item to Table");
   }
@@ -171,6 +175,7 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
     ItemFormId = "";
     ItemFormAmount = 1;
     ItemFormDropWeight = 1.0;
+    ItemFormAnnounceWin = false;
     EditingItemIndex = -1;
   }
 
@@ -284,6 +289,7 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
           ItemFormId = sel.ItemId;
           ItemFormAmount = sel.Amount;
           ItemFormDropWeight = sel.DropWeight;
+          ItemFormAnnounceWin = sel.AnnounceWin;
         } else {
           resetItemForm();
         }
@@ -307,12 +313,17 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
         }
         break;
 
+      case "AnnounceWinChanged":
+        ItemFormAnnounceWin = data.Value != null && data.Value;
+        break;
+
       case "AddItem":
         if (ItemFormId.isEmpty()) break;
         MysteryLootTableItem newItem = new MysteryLootTableItem();
         newItem.ItemId = ItemFormId;
         newItem.Amount = ItemFormAmount;
         newItem.DropWeight = ItemFormDropWeight;
+        newItem.AnnounceWin = ItemFormAnnounceWin;
         if (EditingItemIndex >= 0 && EditingItemIndex < EditingTable.Items.size()) {
           // Updating existing — stay on the same item
           EditingTable.Items.set(EditingItemIndex, newItem);
@@ -349,6 +360,7 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
     @Nullable public String SelectedType;
     @Nullable public String SelectedIndex;
     @Nullable public Float Amount;
+    @Nullable public Boolean Value;
 
     public MysteryLootTableEditorPageEventData() {}
 
@@ -360,6 +372,7 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
       .append(new KeyedCodec<>("@SelectedType", Codec.STRING), (d, v) -> d.SelectedType = v, d -> d.SelectedType).add()
       .append(new KeyedCodec<>("@SelectedIndex", Codec.STRING), (d, v) -> d.SelectedIndex = v, d -> d.SelectedIndex).add()
       .append(new KeyedCodec<>("@Amount", Codec.FLOAT), (d, v) -> d.Amount = v, d -> d.Amount).add()
+      .append(new KeyedCodec<>("@Value", Codec.BOOLEAN), (d, v) -> d.Value = v, d -> d.Value).add()
       .build();
   }
 }

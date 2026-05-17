@@ -10,8 +10,10 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
+import arc.core.components.Msg;
 import arc.mysteryloot.classes.MysteryLootTable;
 import arc.mysteryloot.classes.MysteryLootTableItem;
 import arc.mysteryloot.configs.MysteryLootTablesConfig;
@@ -137,28 +139,40 @@ public class MysteryLootManager {
   ) {
     MysteryLootTableItem rolled = RollLootTable(tableId);
     if (rolled == null) return null;
-    GiveItem(ref, store, playerRef, rolled.ItemId, rolled.Amount);
+    GiveMysteryItem(ref, store, playerRef, rolled);
     return rolled;
   }
 
   /**
-   * Gives a specific item directly to a player.
-   * Called by LootRollSystem after the animation completes.
+   * Gives a mystery loot item to the player and broadcasts a win announcement
+   * if AnnounceWin is configured on the item.
    */
-  public void GiveItem(
+  public void GiveMysteryItem(
     @Nonnull Ref<EntityStore> ref,
     @Nonnull Store<EntityStore> store,
     @Nonnull PlayerRef playerRef,
-    @Nonnull String itemId,
-    int amount
+    @Nonnull MysteryLootTableItem item
   ) {
     Player player = store.getComponent(ref, Player.getComponentType());
     if (player == null) return;
 
-    var itemStack = new ItemStack(itemId, amount);
+    var itemStack = new ItemStack(item.ItemId, item.Amount);
     player.notifyPickupItem(ref, itemStack, null, store);
 
-    var giveItem = new GiveItemInteraction(itemId, amount);
+    var giveItem = new GiveItemInteraction(item.ItemId, item.Amount);
     giveItem.run(store, ref, playerRef);
+
+    if (item.AnnounceWin) {
+      Msg msg = new Msg().Raw("");
+      msg.Append(new Msg().Raw("[Mystery Loot] ").Color("#FFD700").Bold());
+      msg.Append(new Msg().Raw(playerRef.getUsername()).Color("#ffffff").Bold());
+      msg.Append(new Msg().Raw(" won ").Color("#aaaaaa"));
+      msg.Append(new Msg().Raw(item.ItemId.replace("_", " ")).Color("#62ffc0").Bold());
+      if (item.Amount > 1) {
+        msg.Append(new Msg().Raw(" x" + item.Amount).Color("#aaaaaa"));
+      }
+      msg.Append(new Msg().Raw("!").Color("#aaaaaa"));
+      Universe.get().sendMessage(msg.Build());
+    }
   }
 }
