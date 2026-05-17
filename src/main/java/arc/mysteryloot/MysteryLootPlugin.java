@@ -2,10 +2,12 @@ package arc.mysteryloot;
 
 import javax.annotation.Nonnull;
 
+import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 
 import arc.mysteryloot.configs.MysteryLootTablesConfig;
+import arc.mysteryloot.interactions.OpenMysteryLootTableInteraction;
 import arc.mysteryloot.managers.MysteryLootCommandPermissionManager;
 import arc.mysteryloot.managers.MysteryLootManager;
 import arc.mysteryloot.commands.MysteryLootCommands;
@@ -36,6 +38,13 @@ public class MysteryLootPlugin extends JavaPlugin {
     LootRollViewer.SetComponentType(
       this.getEntityStoreRegistry().registerComponent(LootRollViewer.class, "Arc:LootRollViewer", LootRollViewer.CODEC)
     );
+
+    this.getCodecRegistry(Interaction.CODEC).register(
+      OpenMysteryLootTableInteraction.InteractionId,
+      OpenMysteryLootTableInteraction.class,
+      OpenMysteryLootTableInteraction.CODEC
+    );
+
     this.getEntityStoreRegistry().registerSystem(new LootRollSystem());
 
     this.getCommandRegistry().registerCommand(new MysteryLootCommands());

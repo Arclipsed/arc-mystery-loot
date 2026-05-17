@@ -17,8 +17,6 @@ public class MysteryLootTable {
   @Nonnull
   public List<MysteryLootTableItem> Items = new ArrayList<>();
 
-  
-
   public MysteryLootTable() {}
 
   public MysteryLootTable(MysteryLootTable other) {

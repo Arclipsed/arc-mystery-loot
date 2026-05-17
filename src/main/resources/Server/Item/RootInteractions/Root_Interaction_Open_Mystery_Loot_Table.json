@@ -4,6 +4,6 @@
     "Cooldown": 1
   },
   "Interactions": [
-    "Dialog"
+    "Open_Mystery_Loot_Table"
   ]
 }
