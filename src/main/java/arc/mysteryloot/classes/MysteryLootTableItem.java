@@ -11,7 +11,10 @@ public class MysteryLootTableItem {
   public String ItemId = "";
   public double DropWeight = 1.0;
   public int Amount = 1;
+  /** If true, broadcasts a server-wide message when this item is won. */
   public boolean AnnounceWin = false;
+  /** If true, plays the special reward sound (SFX_Mystery_Loot_Reward_2) when this item is won. */
+  public boolean PlaySound = false;
 
   public MysteryLootTableItem() {}
   
@@ -28,6 +31,7 @@ public class MysteryLootTableItem {
       this.DropWeight = other.DropWeight;
       this.Amount = other.Amount;
       this.AnnounceWin = other.AnnounceWin;
+      this.PlaySound = other.PlaySound;
     }
   }
 
@@ -36,7 +40,8 @@ public class MysteryLootTableItem {
     return java.util.Objects.equals(this.ItemId, other.ItemId)
       && this.DropWeight == other.DropWeight
       && this.Amount == other.Amount
-      && this.AnnounceWin == other.AnnounceWin;
+      && this.AnnounceWin == other.AnnounceWin
+      && this.PlaySound == other.PlaySound;
   }
 
   @Nonnull
@@ -64,6 +69,12 @@ public class MysteryLootTableItem {
       new KeyedCodec<>("AnnounceWin", Codec.BOOLEAN),
       (config, value) -> config.AnnounceWin = value != null && value,
       config -> config.AnnounceWin
+    )
+    .add()
+    .append(
+      new KeyedCodec<>("PlaySound", Codec.BOOLEAN),
+      (config, value) -> config.PlaySound = value != null && value,
+      config -> config.PlaySound
     )
     .add()
     .build();

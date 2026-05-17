@@ -49,6 +49,7 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
   private int ItemFormAmount = 1;
   private double ItemFormDropWeight = 1.0;
   private boolean ItemFormAnnounceWin = false;
+  private boolean ItemFormPlaySound = false;
   // -1 = create new item, >= 0 = editing existing item at index
   private int EditingItemIndex = -1;
 
@@ -124,6 +125,8 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
       new EventData().append("Action", "ItemDropChanceChanged").append("@Amount", "#ItemDropChanceInput.Value"), false);
     events.addEventBinding(CustomUIEventBindingType.ValueChanged, "#AnnounceWinRow #CheckBox",
       new EventData().append("Action", "AnnounceWinChanged").append("@Value", "#AnnounceWinRow #CheckBox.Value"), false);
+    events.addEventBinding(CustomUIEventBindingType.ValueChanged, "#PlaySoundRow #CheckBox",
+      new EventData().append("Action", "PlaySoundChanged").append("@Value2", "#PlaySoundRow #CheckBox.Value"), false);
 
     // Item actions
     events.addEventBinding(CustomUIEventBindingType.Activating, "#AddItemButton", EventData.of("Action", "AddItem"), false);
@@ -175,6 +178,7 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
     cmd.set("#ItemAmountInput.Value", (float) ItemFormAmount);
     cmd.set("#ItemDropChanceInput.Value", (float) ItemFormDropWeight);
     cmd.set("#AnnounceWinRow #CheckBox.Value", ItemFormAnnounceWin);
+    cmd.set("#PlaySoundRow #CheckBox.Value", ItemFormPlaySound);
     cmd.set("#AddItemButton.Disabled", ItemFormId.isEmpty());
     cmd.set("#AddItemButton.Text", EditingItemIndex >= 0 ? "Update Item" : "Add Item to Table");
   }
@@ -184,6 +188,7 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
     ItemFormAmount = 1;
     ItemFormDropWeight = 1.0;
     ItemFormAnnounceWin = false;
+    ItemFormPlaySound = false;
     EditingItemIndex = -1;
   }
 
@@ -307,6 +312,7 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
           ItemFormAmount = sel.Amount;
           ItemFormDropWeight = sel.DropWeight;
           ItemFormAnnounceWin = sel.AnnounceWin;
+          ItemFormPlaySound = sel.PlaySound;
         } else {
           resetItemForm();
         }
@@ -334,6 +340,10 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
         ItemFormAnnounceWin = data.Value != null && data.Value;
         break;
 
+      case "PlaySoundChanged":
+        ItemFormPlaySound = data.Value2 != null && data.Value2;
+        break;
+
       case "AddItem":
         if (ItemFormId.isEmpty()) break;
         MysteryLootTableItem newItem = new MysteryLootTableItem();
@@ -341,6 +351,7 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
         newItem.Amount = ItemFormAmount;
         newItem.DropWeight = ItemFormDropWeight;
         newItem.AnnounceWin = ItemFormAnnounceWin;
+        newItem.PlaySound = ItemFormPlaySound;
         if (EditingItemIndex >= 0 && EditingItemIndex < EditingTable.Items.size()) {
           // Updating existing — stay on the same item
           EditingTable.Items.set(EditingItemIndex, newItem);
@@ -378,6 +389,7 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
     @Nullable public String SelectedIndex;
     @Nullable public Float Amount;
     @Nullable public Boolean Value;
+    @Nullable public Boolean Value2;
 
     public MysteryLootTableEditorPageEventData() {}
 
@@ -390,6 +402,7 @@ public class MysteryLootTableEditorPage extends InteractiveCustomUIPage<MysteryL
       .append(new KeyedCodec<>("@SelectedIndex", Codec.STRING), (d, v) -> d.SelectedIndex = v, d -> d.SelectedIndex).add()
       .append(new KeyedCodec<>("@Amount", Codec.FLOAT), (d, v) -> d.Amount = v, d -> d.Amount).add()
       .append(new KeyedCodec<>("@Value", Codec.BOOLEAN), (d, v) -> d.Value = v, d -> d.Value).add()
+      .append(new KeyedCodec<>("@Value2", Codec.BOOLEAN), (d, v) -> d.Value2 = v, d -> d.Value2).add()
       .build();
   }
 }

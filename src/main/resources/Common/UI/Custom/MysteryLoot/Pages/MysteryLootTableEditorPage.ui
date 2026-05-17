@@ -238,6 +238,13 @@ $C.@DecoratedContainer {
         @Checked = false;
       }
 
+      Group { Anchor: (Height: 8); }
+
+      $C.@CheckBoxWithLabel #PlaySoundRow {
+        @Text = "Play special reward sound";
+        @Checked = false;
+      }
+
       Group { Anchor: (Height: 12); }
 
       $C.@SecondaryTextButton #AddItemButton {
