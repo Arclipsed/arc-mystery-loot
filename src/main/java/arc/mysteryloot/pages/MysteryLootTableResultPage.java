@@ -8,6 +8,7 @@ import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
@@ -15,6 +16,8 @@ import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+
+import arc.core.managers.SoundManager;
 
 /**
  * Displayed after a player rolls a loot table.
@@ -51,6 +54,7 @@ public class MysteryLootTableResultPage extends InteractiveCustomUIPage<MysteryL
     cmd.set("#ResultItemNameLabel.Text", ItemId.replace("_", " "));
     cmd.set("#ResultAmountLabel.Text", "x" + Amount);
 
+    SoundManager.Play2DSoundToPlayer(playerRef, "SFX_Mystery_Loot_Reward_1", SoundCategory.SFX);
     events.addEventBinding(CustomUIEventBindingType.Activating, "#CloseButton", com.hypixel.hytale.server.core.ui.builder.EventData.of("Action", "Close"), false);
   }
 

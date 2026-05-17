@@ -1,0 +1,13 @@
+{
+  "Layers": [
+    {
+      "Files": [
+        "Sounds/Mystery_Loot_Reward_2.ogg"
+      ],
+      "StartDelay": 0,
+      "Looping": false,
+      "Volume": 0.5
+    }
+  ],
+  "Parent": "SFX_Attn_Moderate"
+}
