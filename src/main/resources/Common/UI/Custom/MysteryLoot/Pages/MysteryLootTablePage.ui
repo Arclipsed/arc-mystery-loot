@@ -79,7 +79,7 @@ $C.@PageOverlay {
         $C.@TextButton #RollButton {
           FlexWeight: 1;
           Anchor: (Height: 65);
-          Text: "Open Loot";
+          Text: "Open";
         }
       }
     }
